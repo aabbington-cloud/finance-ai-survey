@@ -297,7 +297,7 @@ function speakText(text, onDone) {
   stopMic();
   isSpeaking = true;
   setStatus('speaking', 'Speaking…');
-  if(ELEVEN_KEY && ELEVEN_KEY !== 'sk_c0e4018fd20ce5fc944a60dba17dcf443ab4178e34d5944d'){
+  if(ELEVEN_KEY && ELEVEN_KEY.length > 10){
     speakElevenLabs(text).then(function(){ isSpeaking=false; if(onDone) onDone(); });
   } else {
     speakBrowser(text, function(){ isSpeaking=false; if(onDone) onDone(); });
