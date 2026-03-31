@@ -322,7 +322,7 @@ function speakBrowser(text, onDone) {
 
 async function speakElevenLabs(text) {
   try {
-    var res = await fetch('https://api.elevenlabs.io/v1/text-to-speech/DXFkLCBUTmvXpp2QwZjA', {
+    var res = await fetch('https://api.elevenlabs.io/v1/text-to-speech/hGQkZQUA5RiOXIw7P9iO', {
       method: 'POST',
       headers: { 'xi-api-key': ELEVEN_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: text, model_id: 'eleven_turbo_v2_5', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
