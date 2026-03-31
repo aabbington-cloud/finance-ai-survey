@@ -66,6 +66,21 @@
   .done-icon{font-size:48px}.done-title{font-family:'DM Serif Display',serif;font-size:28px}
   .done-summary{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;font-size:14px;color:var(--muted);line-height:1.7;text-align:left;width:100%}
   .done-meta{font-size:12px;color:var(--muted)}
+  .text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--text);outline:none;transition:border-color 0.2s;margin-bottom:12px}
+  .text-input:focus{border-color:var(--accent)}
+  .input-label{font-size:13px;color:var(--muted);margin-bottom:6px;text-align:left;width:100%}
+  .choice-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--text);text-align:left;cursor:pointer;transition:all 0.15s;user-select:none}
+  .choice-item:hover{border-color:rgba(79,142,247,0.4);background:rgba(79,142,247,0.04)}
+  .choice-item.selected{border-color:var(--accent);background:rgba(79,142,247,0.1);color:var(--text)}
+  .choice-item.open-ended{font-style:italic;text-align:center;border-style:dashed;cursor:default}
+  .choice-item.open-ended:hover{border-color:var(--border);background:var(--surface)}
+  .next-btn{margin-top:8px;padding:12px 32px;border-radius:99px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;border:none;cursor:pointer;transition:all 0.2s;align-self:flex-end}
+  .next-btn:hover{background:#6499f9}
+  .done-answers{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;width:100%;text-align:left}
+  .done-answer-row{padding:10px 0;border-bottom:1px solid var(--border)}
+  .done-answer-row:last-child{border-bottom:none}
+  .done-answer-q{font-size:12px;color:var(--muted);margin-bottom:3px}
+  .done-answer-a{font-size:14px;color:var(--text)}
   .hidden{display:none!important}
 </style>
 </head>
@@ -74,7 +89,13 @@
   <div class="eyebrow">Finance Team · AI Assessment</div>
   <div class="start-screen" id="startScreen">
     <div class="start-title">How are you<br/>using AI?</div>
-    <div class="start-subtitle">A short voice survey — about 5 to 7 minutes. Just speak your answers naturally and I'll guide you through.</div>
+    <div class="start-subtitle">A short voice survey — about 5 to 7 minutes. Speak your answers or click the choices on screen.</div>
+    <div style="width:100%;margin-top:8px">
+      <div class="input-label">Your full name</div>
+      <input class="text-input" type="text" id="inputName" placeholder="e.g. Jane Smith" autocomplete="name"/>
+      <div class="input-label">Your work email</div>
+      <input class="text-input" type="email" id="inputEmail" placeholder="e.g. jane@company.com" autocomplete="email"/>
+    </div>
     <button class="start-btn" id="startBtn">Start Survey →</button>
     <div class="start-note">Works best in Chrome or Edge · Microphone required</div>
   </div>
@@ -103,8 +124,8 @@
   <div class="done-screen hidden" id="doneScreen">
     <div class="done-icon">&#x2705;</div>
     <div class="done-title" id="doneTitle">Thank you!</div>
-    <div class="done-summary" id="doneSummary">Generating your summary...</div>
     <div class="done-meta" id="doneMeta"></div>
+    <div class="done-answers" id="doneAnswers"></div>
   </div>
 </div>
 <script>
@@ -116,73 +137,67 @@ const SHEETS_URL  = "https://script.google.com/macros/s/AKfycbyn-nDPE3wwcTgnNyHm
 
 const QUESTIONS = [
   {
-    id:"q1", num:1, isName:true,
-    text:"What is your full name?",
-    spoken:"Welcome to the Finance AI Assessment. My name is Aria and I will guide you through this short survey today. Let us start with your full name. Please spell it out so I can document it correctly.",
-    options:null
-  },
-  {
-    id:"q2", num:2,
+    id:"q1", num:1,
     text:"What department are you in?",
-    spoken:"Great, thank you. And what department are you in?",
+    spoken:"Welcome to the Finance AI Assessment. My name is Aria and I will guide you through this short survey. First question — what department are you in?",
     options:null
   },
   {
-    id:"q3", num:3,
+    id:"q2", multi:true, num:2,
     text:"Which company-licensed AI tools do you currently use?",
-    spoken:"Which company-licensed AI tools do you currently use for work? Your options are: ChatGPT, Glean, n8n, or none of these tools. You can name one or several.",
+    spoken:"Which company-licensed AI tools do you currently use for work? Select all that apply.",
     options:["ChatGPT","Glean","n8n","I do not currently use any of these tools"]
   },
   {
-    id:"q4", num:4,
+    id:"q2", multi:true, num:2,
     text:"What other tools with AI features do you use?",
-    spoken:"What other tools or software do you use that have AI features? For example: Microsoft Copilot, Google Gemini, Claude, Notion AI, Salesforce AI, BI tools like Tableau or Power BI, coding assistants like GitHub Copilot, or none.",
+    spoken:"What other tools or software do you use that have AI features? Select all that apply.",
     options:["Microsoft Copilot","Google Gemini","Claude","Notion AI","Salesforce AI","BI tools with AI","Coding assistants","None","Other"]
   },
   {
-    id:"q5", num:5,
+    id:"q2", num:2,
     text:"How often do you use AI tools day-to-day?",
-    spoken:"How often do you use AI tools in your day-to-day work? Multiple times a day, about once a day, a few times a week, a few times a month, or rarely or never?",
+    spoken:"How often do you use AI tools in your day-to-day work?",
     options:["Multiple times per day","About once per day","A few times per week","A few times per month","Rarely or never"]
   },
   {
-    id:"q6", num:6,
+    id:"q2", multi:true, num:2,
     text:"What do you primarily use AI for?",
-    spoken:"What do you primarily use AI for? Some examples: data analysis, automating repetitive tasks, writing emails or documents, research, workflow automation, creating reports or dashboards, or brainstorming. Name as many as apply.",
+    spoken:"What do you primarily use AI for? Select all that apply.",
     options:["Data analysis","Automating tasks","Writing","Research","Workflow automation","Reports or dashboards","Brainstorming","Other"]
   },
   {
-    id:"q7", num:7,
+    id:"q2", num:2,
     text:"How much time does AI save you per week?",
-    spoken:"How much time does AI save you on a typical week? More than 10 hours, 5 to 10 hours, 2 to 5 hours, less than 2 hours, or no measurable time savings yet?",
+    spoken:"How much time does AI save you on a typical week?",
     options:["10+ hours","5-10 hours","2-5 hours","Less than 2 hours","No measurable time savings"]
   },
   {
-    id:"q8", num:8,
+    id:"q2", num:2,
     text:"Have you built any repeatable AI workflows?",
-    spoken:"Have you built or set up any repeatable AI workflows or automations? Yes, multiple workflows I use regularly; yes, one or two small automations; not yet but I am interested; or no and I am not sure how?",
+    spoken:"Have you built or set up any repeatable AI workflows or automations?",
     options:["Yes, multiple workflows","Yes, one or two","Not yet but interested","No and not sure how"]
   },
   {
-    id:"q9", num:9,
+    id:"q2", num:2,
     text:"How confident are you working with AI tools?",
-    spoken:"How confident are you in working with AI tools? Very confident, somewhat confident, still a beginner, or not confident at all?",
+    spoken:"How confident are you in working with AI tools?",
     options:["Very confident","Somewhat confident","Beginner","Not confident"]
   },
   {
-    id:"q10", num:10,
+    id:"q2", multi:true, num:2,
     text:"What challenges are you experiencing with AI?",
-    spoken:"What challenges or gaps are you experiencing with AI tools today? For example: not sure how to apply AI to your work, outputs are not reliable, privacy concerns, lack of training, hard to automate end-to-end, too time-consuming, or limited access to the right systems.",
+    spoken:"What challenges or gaps are you experiencing with AI tools today? Select all that apply.",
     options:["Not sure how to apply","Outputs not reliable","Privacy concerns","Lack of training","Hard to automate","Too time-consuming","Limited access","Other"]
   },
   {
-    id:"q11", num:11,
+    id:"q2", multi:true, num:2,
     text:"What would help you get more value from AI?",
-    spoken:"What would help you get more value from AI? Options include: training sessions, role-specific examples, pre-built templates, better integrations, clear guidelines, dedicated support, or more time to experiment.",
+    spoken:"What would help you get more value from AI? Select all that apply.",
     options:["Training sessions","Role-specific examples","Pre-built templates","Better integrations","Clear guidelines","Dedicated support","More time","Other"]
   },
   {
-    id:"q12", num:12,
+    id:"q2", num:2,
     text:"Any final thoughts on your AI experience?",
     spoken:"Last question. Is there anything else you would like to share about your experience with AI? This is completely optional, so feel free to say pass if you are done.",
     options:null
@@ -206,6 +221,13 @@ const REPEAT_TRIGGERS = ["repeat","say that again","what was the question","can 
 
 // ── Survey start ──────────────────────────────────────────────────────────────
 function beginSurvey() {
+  var name = document.getElementById("inputName").value.trim();
+  var email = document.getElementById("inputEmail").value.trim();
+  if (!name) { alert("Please enter your name to continue."); return; }
+  if (!email || !email.includes("@")) { alert("Please enter a valid work email to continue."); return; }
+  respondentName = name;
+  answers["name"] = name;
+  answers["email"] = email;
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("surveyScreen").classList.remove("hidden");
   buildDots();
@@ -250,13 +272,52 @@ function showQuestion(idx) {
 function renderChoices(q) {
   var el = document.getElementById("choicesContainer");
   if (q.options && q.options.length > 0) {
+    var isMulti = q.multi === true;
     el.innerHTML = q.options.map(function(opt) {
-      return '<div class="choice-item">' + opt + '</div>';
+      return '<div class="choice-item" data-qid="' + q.id + '" data-multi="' + isMulti + '" onclick="toggleChoice(this)">' + opt + '</div>';
     }).join("");
+    if (isMulti) {
+      el.innerHTML += '<button class="next-btn" onclick="submitChoices()">Next &rarr;</button>';
+    }
     el.classList.remove("hidden");
   } else {
-    el.innerHTML = '<div class="choice-item open-ended">Speak your answer freely</div>';
+    el.innerHTML = '<div class="choice-item open-ended">Speak your answer freely or type below</div>';
     el.classList.remove("hidden");
+  }
+}
+
+function toggleChoice(el) {
+  var isMulti = el.dataset.multi === "true";
+  var qid = el.dataset.qid;
+  if (isMulti) {
+    el.classList.toggle("selected");
+  } else {
+    var siblings = document.querySelectorAll('[data-qid="' + qid + '"]');
+    siblings.forEach(function(s) { s.classList.remove("selected"); });
+    el.classList.add("selected");
+    // Auto-advance for single select after short delay
+    clearTimeout(silenceTimer);
+    silenceTimer = setTimeout(function() { submitChoices(); }, 600);
+  }
+}
+
+function submitChoices() {
+  var q = QUESTIONS[currentQ];
+  var selected = Array.from(document.querySelectorAll('[data-qid="' + q.id + '"].selected'));
+  if (selected.length === 0 && q.options) {
+    speakTextAsync("Please select at least one option, or speak your answer.");
+    return;
+  }
+  if (selected.length > 0) {
+    var vals = selected.map(function(el) { return el.textContent; });
+    answers[q.id] = vals.join(", ");
+    var confirms = ["Noted.", "Got it.", "Thanks for that.", "Okay.", "Perfect.", "Appreciated.", "Great, thank you."];
+    var confirmText = confirms[currentQ % confirms.length];
+    stopMic(); clearAllTimers();
+    speakText(confirmText, function() {
+      if (currentQ < QUESTIONS.length - 1) { showQuestion(currentQ + 1); }
+      else { finishSurvey(); }
+    });
   }
 }
 
@@ -438,16 +499,7 @@ async function finishSurvey() {
   document.getElementById("surveyScreen").classList.add("hidden");
   document.getElementById("doneScreen").classList.remove("hidden");
   document.getElementById("doneTitle").textContent = "Thank you" + (respondentName ? ", " + respondentName : "") + "!";
-  await speakTextAsync("And that is all the questions! Thank you so much" + (respondentName ? ", " + respondentName : "") + ". Your responses have been recorded. Let me put together a quick summary for you.");
-  var summary = "";
-  try {
-    var block = QUESTIONS.map(function(q) { return "Q" + q.num + ": " + q.text + "\nAnswer: " + (answers[q.id] || "No answer"); }).join("\n\n");
-    summary = await callClaude(
-      "You are an AI analyst summarizing a finance employee survey. Write 3-4 sentences summarizing this person's AI maturity, usage patterns, and top gaps. Be specific and address them directly using you.",
-      "Respondent: " + respondentName + "\n\n" + block
-    );
-  } catch(e) { summary = "Summary could not be generated at this time."; }
-  document.getElementById("doneSummary").textContent = summary;
+  await speakTextAsync("And that is all the questions! Thank you so much" + (respondentName ? ", " + respondentName : "") + ". Your responses have been recorded and we really appreciate your time.");
   var sheetStatus = "";
   if (SHEETS_URL && SHEETS_URL !== "PASTE_SHEETS_URL_HERE") {
     try {
@@ -456,19 +508,27 @@ async function finishSurvey() {
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           timestamp: new Date().toISOString(),
-          name: answers["q1"] || respondentName,
+          name: answers["name"] || respondentName,
+          email: answers["email"] || "",
           department: answers["q2"] || "",
-          Q3:answers["q3"]||"", Q4:answers["q4"]||"", Q5:answers["q5"]||"",
-          Q6:answers["q6"]||"", Q7:answers["q7"]||"", Q8:answers["q8"]||"",
-          Q9:answers["q9"]||"", Q10:answers["q10"]||"", Q11:answers["q11"]||"",
-          Q12:answers["q12"]||"", ai_summary:summary
+          Q3:answers["q2"]||"", Q4:answers["q2"]||"", Q5:answers["q2"]||"",
+          Q6:answers["q2"]||"", Q7:answers["q2"]||"", Q8:answers["q2"]||"",
+          Q9:answers["q2"]||"", Q10:answers["q2"]||"", Q11:answers["q2"]||"",
+          Q12:answers["q2"]||""
         })
       });
       sheetStatus = "Responses saved";
     } catch(e) { sheetStatus = "Could not save — please contact survey admin"; }
   }
   document.getElementById("doneMeta").textContent = sheetStatus;
-  await speakTextAsync(summary);
+
+  // Build on-screen answer summary
+  var summaryEl = document.getElementById("doneAnswers");
+  var rows = QUESTIONS.map(function(q) {
+    var a = answers[q.id] || "No answer";
+    return '<div class="done-answer-row"><div class="done-answer-q">Q' + q.num + ': ' + q.text + '</div><div class="done-answer-a">' + a + '</div></div>';
+  }).join("");
+  summaryEl.innerHTML = rows;
 }
 
 // ── TTS ───────────────────────────────────────────────────────────────────────
