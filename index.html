@@ -7,67 +7,63 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #0d0f14; --surface: #161a23; --surface2: #1e2330;
-    --border: rgba(255,255,255,0.07); --accent: #4f8ef7; --accent2: #7b5ea7;
-    --text: #e8eaf0; --muted: #7a8099; --success: #3ecf8e;
-    --danger: #f56565; --amber: #f6ad55;
+    --bg:#0d0f14;--surface:#161a23;--surface2:#1e2330;
+    --border:rgba(255,255,255,0.07);--accent:#4f8ef7;--accent2:#7b5ea7;
+    --text:#e8eaf0;--muted:#7a8099;--success:#3ecf8e;--danger:#f56565;--amber:#f6ad55;
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; }
-  body {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 100vh;
-    background: radial-gradient(ellipse at 20% 20%, rgba(79,142,247,0.07) 0%, transparent 55%),
-                radial-gradient(ellipse at 80% 80%, rgba(123,94,167,0.06) 0%, transparent 55%), var(--bg);
-  }
-  .shell { width: 100%; max-width: 580px; display: flex; flex-direction: column; align-items: center; padding: 32px 24px; text-align: center; }
-  .eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 32px; font-weight: 500; }
-  .progress-dots { display: flex; gap: 6px; margin-bottom: 40px; justify-content: center; flex-wrap: wrap; max-width: 320px; }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); transition: all 0.4s ease; }
-  .dot.done { background: var(--accent2); border-color: var(--accent2); }
-  .dot.active { background: var(--accent); border-color: var(--accent); transform: scale(1.4); }
-  .question-text { font-family: 'DM Serif Display', serif; font-size: clamp(20px, 4vw, 28px); font-weight: 400; line-height: 1.3; color: var(--text); margin-bottom: 12px; min-height: 80px; transition: opacity 0.3s ease; }
-  .question-text.fading { opacity: 0; }
-  .question-num { font-size: 12px; color: var(--muted); margin-bottom: 32px; letter-spacing: 0.05em; }
-  .waveform { display: flex; align-items: center; justify-content: center; gap: 4px; height: 64px; margin-bottom: 28px; }
-  .waveform-bar { width: 4px; border-radius: 99px; background: var(--accent); height: 8px; transition: background 0.3s; }
-  .waveform.idle .waveform-bar { animation: none; height: 4px; background: var(--surface2); }
-  .waveform.speaking .waveform-bar { animation: speak-wave 0.8s ease-in-out infinite; background: var(--accent); }
-  .waveform.speaking .waveform-bar:nth-child(1){animation-delay:0s} .waveform.speaking .waveform-bar:nth-child(2){animation-delay:.1s}
-  .waveform.speaking .waveform-bar:nth-child(3){animation-delay:.2s} .waveform.speaking .waveform-bar:nth-child(4){animation-delay:.08s}
-  .waveform.speaking .waveform-bar:nth-child(5){animation-delay:.16s} .waveform.speaking .waveform-bar:nth-child(6){animation-delay:.24s}
-  .waveform.speaking .waveform-bar:nth-child(7){animation-delay:.05s} .waveform.speaking .waveform-bar:nth-child(8){animation-delay:.12s}
-  .waveform.speaking .waveform-bar:nth-child(9){animation-delay:.2s} .waveform.speaking .waveform-bar:nth-child(10){animation-delay:.28s}
-  .waveform.speaking .waveform-bar:nth-child(11){animation-delay:.04s} .waveform.speaking .waveform-bar:nth-child(12){animation-delay:.15s}
-  .waveform.listening .waveform-bar { animation: listen-wave 0.6s ease-in-out infinite; background: var(--success); }
-  .waveform.listening .waveform-bar:nth-child(odd){animation-delay:.1s} .waveform.listening .waveform-bar:nth-child(3n){animation-delay:.2s}
-  .waveform.confirming .waveform-bar { animation: speak-wave 0.6s ease-in-out infinite; background: var(--amber); }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6}
+  body{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;
+    background:radial-gradient(ellipse at 20% 20%,rgba(79,142,247,0.07) 0%,transparent 55%),
+               radial-gradient(ellipse at 80% 80%,rgba(123,94,167,0.06) 0%,transparent 55%),var(--bg)}
+  .shell{width:100%;max-width:580px;display:flex;flex-direction:column;align-items:center;padding:32px 24px;text-align:center}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:32px;font-weight:500}
+  .progress-dots{display:flex;gap:6px;margin-bottom:40px;justify-content:center;flex-wrap:wrap;max-width:320px}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);transition:all 0.4s ease}
+  .dot.done{background:var(--accent2);border-color:var(--accent2)}
+  .dot.active{background:var(--accent);border-color:var(--accent);transform:scale(1.4)}
+  .question-text{font-family:'DM Serif Display',serif;font-size:clamp(20px,4vw,28px);font-weight:400;line-height:1.3;color:var(--text);margin-bottom:12px;min-height:80px;transition:opacity 0.3s ease}
+  .question-text.fading{opacity:0}
+  .question-num{font-size:12px;color:var(--muted);margin-bottom:32px;letter-spacing:0.05em}
+  .waveform{display:flex;align-items:center;justify-content:center;gap:4px;height:64px;margin-bottom:28px}
+  .waveform-bar{width:4px;border-radius:99px;background:var(--accent);height:8px;transition:background 0.3s}
+  .waveform.idle .waveform-bar{animation:none;height:4px;background:var(--surface2)}
+  .waveform.speaking .waveform-bar{animation:speak-wave 0.8s ease-in-out infinite;background:var(--accent)}
+  .waveform.speaking .waveform-bar:nth-child(1){animation-delay:0s}.waveform.speaking .waveform-bar:nth-child(2){animation-delay:.1s}
+  .waveform.speaking .waveform-bar:nth-child(3){animation-delay:.2s}.waveform.speaking .waveform-bar:nth-child(4){animation-delay:.08s}
+  .waveform.speaking .waveform-bar:nth-child(5){animation-delay:.16s}.waveform.speaking .waveform-bar:nth-child(6){animation-delay:.24s}
+  .waveform.speaking .waveform-bar:nth-child(7){animation-delay:.05s}.waveform.speaking .waveform-bar:nth-child(8){animation-delay:.12s}
+  .waveform.speaking .waveform-bar:nth-child(9){animation-delay:.2s}.waveform.speaking .waveform-bar:nth-child(10){animation-delay:.28s}
+  .waveform.speaking .waveform-bar:nth-child(11){animation-delay:.04s}.waveform.speaking .waveform-bar:nth-child(12){animation-delay:.15s}
+  .waveform.listening .waveform-bar{animation:listen-wave 0.6s ease-in-out infinite;background:var(--success)}
+  .waveform.listening .waveform-bar:nth-child(odd){animation-delay:.1s}.waveform.listening .waveform-bar:nth-child(3n){animation-delay:.2s}
+  .waveform.confirming .waveform-bar{animation:speak-wave 0.6s ease-in-out infinite;background:var(--amber)}
   .waveform.confirming .waveform-bar:nth-child(odd){animation-delay:.08s}
-  @keyframes speak-wave { 0%,100%{height:6px} 50%{height:40px} }
-  @keyframes listen-wave { 0%,100%{height:8px} 50%{height:48px} }
-  .status-label { font-size: 13px; color: var(--muted); margin-bottom: 20px; min-height: 20px; transition: color 0.3s; letter-spacing: 0.04em; }
-  .status-label.listening { color: var(--success); } .status-label.confirming { color: var(--amber); } .status-label.speaking { color: var(--accent); }
-  .transcript-bubble { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px 22px; font-size: 15px; color: var(--text); line-height: 1.5; min-height: 56px; width: 100%; margin-bottom: 24px; transition: opacity 0.3s, border-color 0.3s; }
-  .transcript-bubble.empty { opacity: 0.3; font-style: italic; color: var(--muted); }
-  .transcript-bubble.filled { border-color: rgba(79,142,247,0.3); opacity: 1; }
-  .mic-btn { width: 64px; height: 64px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; color: var(--muted); margin-bottom: 16px; }
-  .mic-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .mic-btn.listening { border-color: var(--success); color: var(--success); background: rgba(62,207,142,0.08); animation: mic-pulse 1.5s ease-in-out infinite; }
-  .mic-btn.speaking { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.08); }
-  @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(62,207,142,0.3)} 50%{box-shadow:0 0 0 12px rgba(62,207,142,0)} }
-  .mic-hint { font-size: 12px; color: var(--muted); }
-  .start-screen { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
-  .start-title { font-family: 'DM Serif Display', serif; font-size: clamp(28px, 5vw, 42px); line-height: 1.2; margin-bottom: 8px; }
-  .start-subtitle { font-size: 15px; color: var(--muted); max-width: 400px; line-height: 1.6; }
-  .start-btn { margin-top: 16px; padding: 16px 40px; border-radius: 99px; background: var(--accent); color: #fff; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; }
-  .start-btn:hover { background: #6499f9; transform: translateY(-1px); }
-  .start-note { font-size: 12px; color: var(--muted); }
-  .survey-screen { width: 100%; display: flex; flex-direction: column; align-items: center; }
-  .done-screen { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
-  .done-icon { font-size: 48px; } .done-title { font-family: 'DM Serif Display', serif; font-size: 28px; }
-  .done-summary { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; font-size: 14px; color: var(--muted); line-height: 1.7; text-align: left; width: 100%; }
-  .done-meta { font-size: 12px; color: var(--muted); }
-  .hidden { display: none !important; }
+  @keyframes speak-wave{0%,100%{height:6px}50%{height:40px}}
+  @keyframes listen-wave{0%,100%{height:8px}50%{height:48px}}
+  .status-label{font-size:13px;color:var(--muted);margin-bottom:20px;min-height:20px;transition:color 0.3s;letter-spacing:0.04em}
+  .status-label.listening{color:var(--success)}.status-label.confirming{color:var(--amber)}.status-label.speaking{color:var(--accent)}
+  .transcript-bubble{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 22px;font-size:15px;color:var(--text);line-height:1.5;min-height:56px;width:100%;margin-bottom:24px;transition:opacity 0.3s,border-color 0.3s}
+  .transcript-bubble.empty{opacity:0.3;font-style:italic;color:var(--muted)}
+  .transcript-bubble.filled{border-color:rgba(79,142,247,0.3);opacity:1}
+  .mic-btn{width:64px;height:64px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--muted);margin-bottom:16px}
+  .mic-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .mic-btn.listening{border-color:var(--success);color:var(--success);background:rgba(62,207,142,0.08);animation:mic-pulse 1.5s ease-in-out infinite}
+  .mic-btn.speaking{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.08)}
+  @keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(62,207,142,0.3)}50%{box-shadow:0 0 0 12px rgba(62,207,142,0)}}
+  .mic-hint{font-size:12px;color:var(--muted)}
+  .start-screen{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%}
+  .start-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:8px}
+  .start-subtitle{font-size:15px;color:var(--muted);max-width:400px;line-height:1.6}
+  .start-btn{margin-top:16px;padding:16px 40px;border-radius:99px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;border:none;cursor:pointer;transition:all 0.2s}
+  .start-btn:hover{background:#6499f9;transform:translateY(-1px)}
+  .start-note{font-size:12px;color:var(--muted)}
+  .survey-screen{width:100%;display:flex;flex-direction:column;align-items:center}
+  .done-screen{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
+  .done-icon{font-size:48px}.done-title{font-family:'DM Serif Display',serif;font-size:28px}
+  .done-summary{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;font-size:14px;color:var(--muted);line-height:1.7;text-align:left;width:100%}
+  .done-meta{font-size:12px;color:var(--muted)}
+  .hidden{display:none!important}
 </style>
 </head>
 <body>
@@ -89,7 +85,7 @@
       <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
       <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
     </div>
-    <div class="status-label" id="statusLabel">Getting ready…</div>
+    <div class="status-label" id="statusLabel">Getting ready...</div>
     <div class="transcript-bubble empty" id="transcriptBubble">Your answer will appear here</div>
     <button class="mic-btn" id="micBtn">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -101,9 +97,9 @@
     <div class="mic-hint" id="micHint">Click mic to speak, or wait for auto-listen</div>
   </div>
   <div class="done-screen hidden" id="doneScreen">
-    <div class="done-icon">✅</div>
+    <div class="done-icon">&#x2705;</div>
     <div class="done-title" id="doneTitle">Thank you!</div>
-    <div class="done-summary" id="doneSummary">Generating your summary…</div>
+    <div class="done-summary" id="doneSummary">Generating your summary...</div>
     <div class="done-meta" id="doneMeta"></div>
   </div>
 </div>
@@ -115,381 +111,419 @@ const SHEETS_URL  = "https://script.google.com/macros/s/AKfycbyn-nDPE3wwcTgnNyHm
 // ─────────────────────────────────────────────────────────────────────────────
 
 const QUESTIONS = [
-  { id:'q1',  num:1,  isName:true, text:'What is your full name?', spoken:"Welcome to the Finance AI Assessment. My name is Aria and I'll guide you through this short survey today. Let's start — what is your full name? Please spell it out so I can document it correctly.", options:null },
-  { id:'q2',  num:2,  text:'What department are you in?', spoken:"Great, thank you. And what department are you in?", options:null },
-  { id:'q3',  num:3,  text:'Which company-licensed AI tools do you currently use?', spoken:"Which company-licensed AI tools do you currently use for work? Your options are: ChatGPT, Glean, n8n, or none of these tools. You can name one or several.", options:['ChatGPT','Glean','n8n','I don't currently use any of these tools'] },
-  { id:'q4',  num:4,  text:'What other tools with AI features do you use?', spoken:"What other tools or software do you use that have AI features? For example: Microsoft Copilot, Google Gemini, Claude, Notion AI, Salesforce AI, BI tools like Tableau or Power BI, coding assistants like GitHub Copilot, or none.", options:['Microsoft Copilot','Google Gemini','Claude','Notion AI','Salesforce AI','BI tools with AI','Coding assistants','None','Other'] },
-  { id:'q5',  num:5,  text:'How often do you use AI tools day-to-day?', spoken:"How often do you use AI tools in your day-to-day work? Multiple times a day, about once a day, a few times a week, a few times a month, or rarely or never?", options:['Multiple times per day','About once per day','A few times per week','A few times per month','Rarely or never'] },
-  { id:'q6',  num:6,  text:'What do you primarily use AI for?', spoken:"What do you primarily use AI for? Some examples: data analysis, automating repetitive tasks, writing emails or documents, research, workflow automation, creating reports or dashboards, or brainstorming. Name as many as apply.", options:['Data analysis','Automating tasks','Writing','Research','Workflow automation','Reports or dashboards','Brainstorming','Other'] },
-  { id:'q7',  num:7,  text:'How much time does AI save you per week?', spoken:"How much time does AI save you on a typical week? More than 10 hours, 5 to 10 hours, 2 to 5 hours, less than 2 hours, or no measurable time savings yet?", options:['10+ hours','5-10 hours','2-5 hours','Less than 2 hours','No measurable time savings'] },
-  { id:'q8',  num:8,  text:'Have you built any repeatable AI workflows?', spoken:"Have you built or set up any repeatable AI workflows or automations? Yes, multiple workflows I use regularly; yes, one or two small automations; not yet but I'm interested; or no and I'm not sure how?", options:['Yes — multiple workflows','Yes — one or two','Not yet but interested','No and not sure how'] },
-  { id:'q9',  num:9,  text:'How confident are you working with AI tools?', spoken:"How confident are you in working with AI tools? Very confident, somewhat confident, still a beginner, or not confident at all?", options:['Very confident','Somewhat confident','Beginner','Not confident'] },
-  { id:'q10', num:10, text:'What challenges are you experiencing with AI?', spoken:"What challenges or gaps are you experiencing with AI tools today? For example: not sure how to apply AI to your work, outputs aren't reliable, privacy concerns, lack of training, hard to automate end-to-end, too time-consuming, or limited access to the right systems.", options:['Not sure how to apply','Outputs not reliable','Privacy concerns','Lack of training','Hard to automate','Too time-consuming','Limited access','Other'] },
-  { id:'q11', num:11, text:'What would help you get more value from AI?', spoken:"What would help you get more value from AI? Options include: training sessions, role-specific examples, pre-built templates, better integrations, clear guidelines, dedicated support, or more time to experiment.", options:['Training sessions','Role-specific examples','Pre-built templates','Better integrations','Clear guidelines','Dedicated support','More time','Other'] },
-  { id:'q12', num:12, text:'Any final thoughts on your AI experience?', spoken:"Last question — is there anything else you'd like to share about your experience with AI? This is completely optional, so feel free to say pass if you're done.", options:null }
+  {
+    id:"q1", num:1, isName:true,
+    text:"What is your full name?",
+    spoken:"Welcome to the Finance AI Assessment. My name is Aria and I will guide you through this short survey today. Let us start with your full name. Please spell it out so I can document it correctly.",
+    options:null
+  },
+  {
+    id:"q2", num:2,
+    text:"What department are you in?",
+    spoken:"Great, thank you. And what department are you in?",
+    options:null
+  },
+  {
+    id:"q3", num:3,
+    text:"Which company-licensed AI tools do you currently use?",
+    spoken:"Which company-licensed AI tools do you currently use for work? Your options are: ChatGPT, Glean, n8n, or none of these tools. You can name one or several.",
+    options:["ChatGPT","Glean","n8n","I do not currently use any of these tools"]
+  },
+  {
+    id:"q4", num:4,
+    text:"What other tools with AI features do you use?",
+    spoken:"What other tools or software do you use that have AI features? For example: Microsoft Copilot, Google Gemini, Claude, Notion AI, Salesforce AI, BI tools like Tableau or Power BI, coding assistants like GitHub Copilot, or none.",
+    options:["Microsoft Copilot","Google Gemini","Claude","Notion AI","Salesforce AI","BI tools with AI","Coding assistants","None","Other"]
+  },
+  {
+    id:"q5", num:5,
+    text:"How often do you use AI tools day-to-day?",
+    spoken:"How often do you use AI tools in your day-to-day work? Multiple times a day, about once a day, a few times a week, a few times a month, or rarely or never?",
+    options:["Multiple times per day","About once per day","A few times per week","A few times per month","Rarely or never"]
+  },
+  {
+    id:"q6", num:6,
+    text:"What do you primarily use AI for?",
+    spoken:"What do you primarily use AI for? Some examples: data analysis, automating repetitive tasks, writing emails or documents, research, workflow automation, creating reports or dashboards, or brainstorming. Name as many as apply.",
+    options:["Data analysis","Automating tasks","Writing","Research","Workflow automation","Reports or dashboards","Brainstorming","Other"]
+  },
+  {
+    id:"q7", num:7,
+    text:"How much time does AI save you per week?",
+    spoken:"How much time does AI save you on a typical week? More than 10 hours, 5 to 10 hours, 2 to 5 hours, less than 2 hours, or no measurable time savings yet?",
+    options:["10+ hours","5-10 hours","2-5 hours","Less than 2 hours","No measurable time savings"]
+  },
+  {
+    id:"q8", num:8,
+    text:"Have you built any repeatable AI workflows?",
+    spoken:"Have you built or set up any repeatable AI workflows or automations? Yes, multiple workflows I use regularly; yes, one or two small automations; not yet but I am interested; or no and I am not sure how?",
+    options:["Yes, multiple workflows","Yes, one or two","Not yet but interested","No and not sure how"]
+  },
+  {
+    id:"q9", num:9,
+    text:"How confident are you working with AI tools?",
+    spoken:"How confident are you in working with AI tools? Very confident, somewhat confident, still a beginner, or not confident at all?",
+    options:["Very confident","Somewhat confident","Beginner","Not confident"]
+  },
+  {
+    id:"q10", num:10,
+    text:"What challenges are you experiencing with AI?",
+    spoken:"What challenges or gaps are you experiencing with AI tools today? For example: not sure how to apply AI to your work, outputs are not reliable, privacy concerns, lack of training, hard to automate end-to-end, too time-consuming, or limited access to the right systems.",
+    options:["Not sure how to apply","Outputs not reliable","Privacy concerns","Lack of training","Hard to automate","Too time-consuming","Limited access","Other"]
+  },
+  {
+    id:"q11", num:11,
+    text:"What would help you get more value from AI?",
+    spoken:"What would help you get more value from AI? Options include: training sessions, role-specific examples, pre-built templates, better integrations, clear guidelines, dedicated support, or more time to experiment.",
+    options:["Training sessions","Role-specific examples","Pre-built templates","Better integrations","Clear guidelines","Dedicated support","More time","Other"]
+  },
+  {
+    id:"q12", num:12,
+    text:"Any final thoughts on your AI experience?",
+    spoken:"Last question. Is there anything else you would like to share about your experience with AI? This is completely optional, so feel free to say pass if you are done.",
+    options:null
+  }
 ];
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let currentQ=0, answers={}, respondentName='', recognition=null, isSpeaking=false;
-let autoListenTimer=null, silenceTimer=null, pausePromptTimer=null, secondPauseTimer=null;
-let currentTranscript='', pauseCount=0, followUpAsked=false;
+let currentQ = 0;
+let answers = {};
+let respondentName = "";
+let recognition = null;
+let isSpeaking = false;
+let autoListenTimer = null;
+let silenceTimer = null;
+let pausePromptTimer = null;
+let secondPauseTimer = null;
+let currentTranscript = "";
+let followUpAsked = false;
 
-// ── Pause prompt phrases (warm, collegial) ────────────────────────────────────
-const PAUSE_PROMPTS_1 = [
-  'Take your time, I'm listening.',
-  'No rush at all — whenever you're ready.',
-  'I'm still here, go ahead whenever you're comfortable.'
-];
-const PAUSE_PROMPTS_2 = [
-  'Just to recap the question — ',
-  'Let me repeat that for you — ',
-  'Happy to ask again — '
-];
+const REPEAT_TRIGGERS = ["repeat","say that again","what was the question","can you repeat","again please","pardon","what did you say","say again","could you repeat","huh"];
 
-// ── Repeat trigger words ──────────────────────────────────────────────────────
-const REPEAT_TRIGGERS = ['repeat','say that again','what was the question','can you repeat','again please','pardon','what did you say','say again','could you repeat','huh'];
-
-// ── Begin survey ──────────────────────────────────────────────────────────────
+// ── Survey start ──────────────────────────────────────────────────────────────
 function beginSurvey() {
-  document.getElementById('startScreen').classList.add('hidden');
-  document.getElementById('surveyScreen').classList.remove('hidden');
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("surveyScreen").classList.remove("hidden");
   buildDots();
   showQuestion(0);
 }
 
 function buildDots() {
-  document.getElementById('progressDots').innerHTML = QUESTIONS.map((_,i) => '<div class="dot" id="dot'+i+'"></div>').join('');
+  document.getElementById("progressDots").innerHTML = QUESTIONS.map(function(_,i) {
+    return '<div class="dot" id="dot' + i + '"></div>';
+  }).join("");
 }
 
 function updateDots(idx) {
-  QUESTIONS.forEach((_,i) => {
-    document.getElementById('dot'+i).className = 'dot'+(i<idx?' done':i===idx?' active':'');
+  QUESTIONS.forEach(function(_,i) {
+    document.getElementById("dot" + i).className = "dot" + (i < idx ? " done" : i === idx ? " active" : "");
   });
 }
 
 function showQuestion(idx) {
-  stopMic(); clearAllTimers();
-  currentQ=idx; currentTranscript=''; pauseCount=0; followUpAsked=false;
+  stopMic();
+  clearAllTimers();
+  currentQ = idx;
+  currentTranscript = "";
+  followUpAsked = false;
   var q = QUESTIONS[idx];
   updateDots(idx);
-  var qtEl = document.getElementById('questionText');
-  qtEl.classList.add('fading');
+  var qtEl = document.getElementById("questionText");
+  qtEl.classList.add("fading");
   setTimeout(function() {
     qtEl.textContent = q.text;
-    qtEl.classList.remove('fading');
-    document.getElementById('questionNum').textContent = 'Question '+(idx+1)+' of '+QUESTIONS.length;
+    qtEl.classList.remove("fading");
+    document.getElementById("questionNum").textContent = "Question " + (idx + 1) + " of " + QUESTIONS.length;
   }, 300);
-  setTranscript('', false);
-  setStatus('idle', 'Getting ready…');
+  setTranscript("", false);
+  setStatus("idle", "Getting ready...");
   speakText(q.spoken, function() {
     autoListenTimer = setTimeout(function() { startListening(); }, 600);
   });
 }
 
-// ── UI helpers ────────────────────────────────────────────────────────────────
-function setWaveform(state) { document.getElementById('waveform').className = 'waveform '+state; }
+// ── UI ────────────────────────────────────────────────────────────────────────
+function setWaveform(state) { document.getElementById("waveform").className = "waveform " + state; }
 
 function setStatus(state, text) {
-  var el = document.getElementById('statusLabel');
-  el.textContent = text; el.className = 'status-label '+state;
+  var el = document.getElementById("statusLabel");
+  el.textContent = text;
+  el.className = "status-label " + state;
   setWaveform(state);
-  var btn = document.getElementById('micBtn');
-  btn.className = 'mic-btn '+(state==='listening'?'listening':(state==='speaking'||state==='confirming')?'speaking':'');
+  var btn = document.getElementById("micBtn");
+  btn.className = "mic-btn " + (state === "listening" ? "listening" : (state === "speaking" || state === "confirming") ? "speaking" : "");
 }
 
 function setTranscript(text, filled) {
-  var el = document.getElementById('transcriptBubble');
-  el.textContent = text || 'Your answer will appear here';
-  el.className = 'transcript-bubble '+(filled?'filled':'empty');
+  var el = document.getElementById("transcriptBubble");
+  el.textContent = text || "Your answer will appear here";
+  el.className = "transcript-bubble " + (filled ? "filled" : "empty");
 }
 
 // ── Mic ───────────────────────────────────────────────────────────────────────
-function toggleMic() { if(recognition){ stopMic(); } else { startListening(); } }
+function toggleMic() { if (recognition) { stopMic(); } else { startListening(); } }
 
 function startListening() {
-  if(isSpeaking) return;
+  if (isSpeaking) return;
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR){ setStatus('idle','Voice not supported — use Chrome or Edge'); return; }
+  if (!SR) { setStatus("idle", "Voice not supported — use Chrome or Edge"); return; }
   recognition = new SR();
   recognition.continuous = true;
   recognition.interimResults = true;
-  recognition.lang = 'en-US';
+  recognition.lang = "en-US";
 
   recognition.onstart = function() {
-    setStatus('listening','Listening…');
-    document.getElementById('micHint').textContent = 'Speak now — I'll move on when you're done';
-    // Start pause detection — 8 seconds of nothing
+    setStatus("listening", "Listening...");
+    document.getElementById("micHint").textContent = "Speak now — I will move on when you are done";
     schedulePausePrompt();
   };
 
   recognition.onresult = function(e) {
-    // They spoke — reset pause timers
-    clearTimeout(pausePromptTimer); clearTimeout(secondPauseTimer);
+    clearTimeout(pausePromptTimer);
+    clearTimeout(secondPauseTimer);
     clearTimeout(silenceTimer);
-
-    var interim='', final='';
-    for(var i=e.resultIndex; i<e.results.length; i++){
-      if(e.results[i].isFinal) final += e.results[i][0].transcript;
+    var interim = "", final = "";
+    for (var i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
       else interim += e.results[i][0].transcript;
     }
-    var text = (currentTranscript+' '+(final||interim)).trim();
+    var text = (currentTranscript + " " + (final || interim)).trim();
     setTranscript(text, true);
-
-    if(final){
-      currentTranscript = (currentTranscript+' '+final).trim();
-      // Check for repeat request
+    if (final) {
+      currentTranscript = (currentTranscript + " " + final).trim();
       var lower = final.toLowerCase().trim();
-      var isRepeat = REPEAT_TRIGGERS.some(function(t){ return lower.includes(t); });
-      if(isRepeat){
-        currentTranscript = '';
-        setTranscript('', false);
-        silenceTimer = setTimeout(function(){ handleRepeatRequest(); }, 500);
+      var isRepeat = REPEAT_TRIGGERS.some(function(t) { return lower.includes(t); });
+      if (isRepeat) {
+        currentTranscript = "";
+        setTranscript("", false);
+        silenceTimer = setTimeout(function() { handleRepeatRequest(); }, 500);
       } else {
-        // Wait 2s of silence then process
-        silenceTimer = setTimeout(function(){ processAnswer(currentTranscript); }, 2000);
-        // Reset pause prompt for next stretch of silence
+        silenceTimer = setTimeout(function() { processAnswer(currentTranscript); }, 2000);
         schedulePausePrompt();
       }
     }
   };
 
-  recognition.onerror = function(e){ if(e.error !== 'no-speech') setStatus('idle','Mic error: '+e.error); };
-  recognition.onend = function(){ if(recognition){ try{ recognition.start(); }catch(e){} } };
+  recognition.onerror = function(e) { if (e.error !== "no-speech") setStatus("idle", "Mic error: " + e.error); };
+  recognition.onend = function() { if (recognition) { try { recognition.start(); } catch(e) {} } };
   recognition.start();
 }
 
 function stopMic() {
   clearTimeout(silenceTimer);
-  if(recognition){ recognition.onend=null; try{ recognition.stop(); }catch(e){} recognition=null; }
-  document.getElementById('micHint').textContent = 'Click mic to speak, or wait for auto-listen';
+  if (recognition) { recognition.onend = null; try { recognition.stop(); } catch(e) {} recognition = null; }
+  document.getElementById("micHint").textContent = "Click mic to speak, or wait for auto-listen";
 }
 
-function clearAllTimers(){
-  clearTimeout(autoListenTimer); clearTimeout(silenceTimer);
-  clearTimeout(pausePromptTimer); clearTimeout(secondPauseTimer);
+function clearAllTimers() {
+  clearTimeout(autoListenTimer);
+  clearTimeout(silenceTimer);
+  clearTimeout(pausePromptTimer);
+  clearTimeout(secondPauseTimer);
 }
 
-// ── Pause detection ───────────────────────────────────────────────────────────
+// ── Pause handling ────────────────────────────────────────────────────────────
 function schedulePausePrompt() {
-  clearTimeout(pausePromptTimer); clearTimeout(secondPauseTimer);
-  pausePromptTimer = setTimeout(function(){ handleFirstPause(); }, 8000);
+  clearTimeout(pausePromptTimer);
+  clearTimeout(secondPauseTimer);
+  pausePromptTimer = setTimeout(function() { handleFirstPause(); }, 8000);
 }
 
 async function handleFirstPause() {
-  if(isSpeaking) return;
-  pauseCount++;
-  var prompt = PAUSE_PROMPTS_1[Math.floor(Math.random() * PAUSE_PROMPTS_1.length)];
-  await speakTextAsync(prompt);
-  // If still no answer after another 8s, re-read the question
-  secondPauseTimer = setTimeout(function(){ handleSecondPause(); }, 8000);
+  if (isSpeaking) return;
+  var prompts = ["Take your time, I am listening.", "No rush at all, whenever you are ready.", "I am still here, go ahead whenever you are comfortable."];
+  await speakTextAsync(prompts[Math.floor(Math.random() * prompts.length)]);
+  secondPauseTimer = setTimeout(function() { handleSecondPause(); }, 8000);
   startListening();
 }
 
 async function handleSecondPause() {
-  if(isSpeaking) return;
+  if (isSpeaking) return;
   var q = QUESTIONS[currentQ];
-  var prefix = PAUSE_PROMPTS_2[Math.floor(Math.random() * PAUSE_PROMPTS_2.length)];
-  await speakTextAsync(prefix + q.spoken);
-  autoListenTimer = setTimeout(function(){ startListening(); }, 400);
+  var prefixes = ["Just to recap the question — ", "Let me repeat that for you — ", "Happy to ask again — "];
+  await speakTextAsync(prefixes[Math.floor(Math.random() * prefixes.length)] + q.spoken);
+  autoListenTimer = setTimeout(function() { startListening(); }, 400);
 }
 
-// ── Repeat request ────────────────────────────────────────────────────────────
 async function handleRepeatRequest() {
   stopMic();
   var q = QUESTIONS[currentQ];
-  await speakTextAsync('Of course! ' + q.spoken);
-  autoListenTimer = setTimeout(function(){ startListening(); }, 400);
+  await speakTextAsync("Of course. " + q.spoken);
+  autoListenTimer = setTimeout(function() { startListening(); }, 400);
 }
 
 // ── Process answer ────────────────────────────────────────────────────────────
 async function processAnswer(rawText) {
-  stopMic(); clearAllTimers();
+  stopMic();
+  clearAllTimers();
 
-  if(!rawText || rawText.trim() === ''){
-    await speakTextAsync('I didn't quite catch that — no worries, go ahead whenever you're ready.');
-    autoListenTimer = setTimeout(function(){ startListening(); }, 400);
+  if (!rawText || rawText.trim() === "") {
+    await speakTextAsync("I did not quite catch that. No worries, go ahead whenever you are ready.");
+    autoListenTimer = setTimeout(function() { startListening(); }, 400);
     return;
   }
 
   var q = QUESTIONS[currentQ];
   var lower = rawText.toLowerCase().trim();
 
-  // Handle skip
-  if(lower === 'skip' || lower === 'pass' || lower === 'next'){
-    answers[q.id] = 'Skipped';
-    await speakTextAsync('No problem, we'll move on.');
-    if(currentQ < QUESTIONS.length-1){ setTimeout(function(){ showQuestion(currentQ+1); }, 400); }
-    else { setTimeout(function(){ finishSurvey(); }, 400); }
+  if (lower === "skip" || lower === "pass" || lower === "next") {
+    answers[q.id] = "Skipped";
+    await speakTextAsync("No problem, we will move on.");
+    if (currentQ < QUESTIONS.length - 1) { setTimeout(function() { showQuestion(currentQ + 1); }, 400); }
+    else { setTimeout(function() { finishSurvey(); }, 400); }
     return;
   }
 
   var cleanedAnswer = rawText.trim();
 
-  // Use Claude to: 1) check if answer is too vague, 2) map to options, 3) clean up
   try {
-    var optList = q.options ? 'Options: '+q.options.join(', ') : '';
-    var sysPrompt = 'You are a warm, conversational survey assistant conducting a voice survey. ' +
-      'Evaluate the user's answer and return ONLY JSON with these fields: ' +
-      '{"matched": ["option text"], "summary": "cleaned up answer max 20 words", ' +
-      '"is_vague": true/false, "followup": "a warm 1-sentence follow-up question if vague, else null"}. ' +
-      'is_vague should be true if the answer is unclear, too short (like just "yes" or "I don't know"), or doesn't address the question. ' +
-      'If is_vague is true, write a natural follow-up question in followup. ' +
-      (q.options ? 'Match matched to the closest options. ' : 'Leave matched as empty array. ') +
-      'Keep the tone warm and collegial, like a friendly colleague.';
+    var optList = q.options ? "Options: " + q.options.join(", ") : "";
+    var optNote = q.options ? "Match the matched field to the closest options." : "Leave matched as empty array.";
+    var sysPrompt = "You are a warm conversational survey assistant. Evaluate the answer and return ONLY valid JSON with exactly these fields: {\"matched\": [], \"summary\": \"\", \"is_vague\": false, \"followup\": null}. is_vague is true if the answer is unclear or too short. If is_vague is true write a warm one-sentence follow-up in followup. " + optNote + " Keep the tone warm and collegial.";
+    var userMsg = "Question: " + q.text + "\n" + optList + "\nUser said: " + rawText + "\nReturn JSON only.";
+    var resp = await callClaude(sysPrompt, userMsg);
+    var parsed = JSON.parse(resp.replace(/```json|```/g, "").trim());
+    answers[q.id] = (parsed.matched && parsed.matched.length > 0) ? parsed.matched.join(", ") : parsed.summary;
+    cleanedAnswer = parsed.summary || rawText;
+    if (q.isName) respondentName = cleanedAnswer.split(" ")[0];
 
-    var resp = await callClaude(sysPrompt,
-      'Question: "'+q.text+'"
-'+optList+'
-User said: "'+rawText+'"
-Return JSON only.'
-    );
-    var parsed = JSON.parse(resp.replace(/```json|```/g,'').trim());
-
-    // If vague and we haven't asked a follow-up yet, ask one
-    if(parsed.is_vague && !followUpAsked && parsed.followup){
+    if (parsed.is_vague && !followUpAsked && parsed.followup) {
       followUpAsked = true;
       setTranscript(rawText, true);
       await speakTextAsync(parsed.followup);
-      currentTranscript = rawText + ' '; // keep what they said so far
-      autoListenTimer = setTimeout(function(){ startListening(); }, 400);
+      currentTranscript = rawText + " ";
+      autoListenTimer = setTimeout(function() { startListening(); }, 400);
       return;
     }
-
-    // Answer is good — save it
-    answers[q.id] = (parsed.matched && parsed.matched.length > 0) ? parsed.matched.join(', ') : parsed.summary;
-    cleanedAnswer = parsed.summary || rawText;
-    if(q.isName) respondentName = cleanedAnswer.split(' ')[0];
-
-  } catch(e){
+  } catch(e) {
     answers[q.id] = rawText;
     cleanedAnswer = rawText;
-    if(q.isName) respondentName = rawText.split(' ')[0];
+    if (q.isName) respondentName = rawText.split(" ")[0];
   }
 
-  // Confirm what was heard
   setTranscript(cleanedAnswer, true);
-  setStatus('confirming', 'Got it — confirming your answer…');
-  var confirms = ['Got it — ','I've noted that — ','Thanks for sharing — ','Recorded — ','I heard — '];
+  setStatus("confirming", "Got it, confirming your answer...");
+  var confirms = ["Got it. ", "I have noted that. ", "Thanks for sharing. ", "Recorded. ", "I heard you. "];
   var confirmText = q.isName
-    ? 'Nice to meet you, '+cleanedAnswer.split(' ')[0]+'! Great to have you here.'
-    : confirms[currentQ % confirms.length] + cleanedAnswer + '.';
+    ? "Nice to meet you, " + cleanedAnswer.split(" ")[0] + ". Great to have you here."
+    : confirms[currentQ % confirms.length] + cleanedAnswer + ".";
   await speakTextAsync(confirmText);
 
-  if(currentQ < QUESTIONS.length-1){ setTimeout(function(){ showQuestion(currentQ+1); }, 400); }
-  else { setTimeout(function(){ finishSurvey(); }, 400); }
+  if (currentQ < QUESTIONS.length - 1) { setTimeout(function() { showQuestion(currentQ + 1); }, 400); }
+  else { setTimeout(function() { finishSurvey(); }, 400); }
 }
 
-// ── Finish survey ─────────────────────────────────────────────────────────────
+// ── Finish ────────────────────────────────────────────────────────────────────
 async function finishSurvey() {
-  stopMic(); clearAllTimers();
-  document.getElementById('surveyScreen').classList.add('hidden');
-  document.getElementById('doneScreen').classList.remove('hidden');
-  document.getElementById('doneTitle').textContent = 'Thank you'+(respondentName?', '+respondentName:'')+'!';
-  await speakTextAsync('And that's all the questions! Thank you so much'+(respondentName?', '+respondentName:'')+'. Your responses have been recorded. Let me put together a quick summary for you.');
-  var summary = '';
+  stopMic();
+  clearAllTimers();
+  document.getElementById("surveyScreen").classList.add("hidden");
+  document.getElementById("doneScreen").classList.remove("hidden");
+  document.getElementById("doneTitle").textContent = "Thank you" + (respondentName ? ", " + respondentName : "") + "!";
+  await speakTextAsync("And that is all the questions! Thank you so much" + (respondentName ? ", " + respondentName : "") + ". Your responses have been recorded. Let me put together a quick summary for you.");
+  var summary = "";
   try {
-    var block = QUESTIONS.map(function(q){ return 'Q'+q.num+': '+q.text+'\nAnswer: '+(answers[q.id]||'No answer'); }).join('\n\n');
+    var block = QUESTIONS.map(function(q) { return "Q" + q.num + ": " + q.text + "\nAnswer: " + (answers[q.id] || "No answer"); }).join("\n\n");
     summary = await callClaude(
-      'You are an AI analyst summarizing a finance employee survey. Write 3-4 sentences summarizing this person's AI maturity, usage patterns, and top gaps. Be specific and address them directly using "you".',
-      'Respondent: '+respondentName+'\n\n'+block
+      "You are an AI analyst summarizing a finance employee survey. Write 3-4 sentences summarizing this person's AI maturity, usage patterns, and top gaps. Be specific and address them directly using you.",
+      "Respondent: " + respondentName + "\n\n" + block
     );
-  } catch(e){ summary = 'Summary could not be generated at this time.'; }
-  document.getElementById('doneSummary').textContent = summary;
-  var sheetStatus = '';
-  if(SHEETS_URL && SHEETS_URL !== 'PASTE_SHEETS_URL_HERE'){
+  } catch(e) { summary = "Summary could not be generated at this time."; }
+  document.getElementById("doneSummary").textContent = summary;
+  var sheetStatus = "";
+  if (SHEETS_URL && SHEETS_URL !== "PASTE_SHEETS_URL_HERE") {
     try {
       await fetch(SHEETS_URL, {
-        method:'POST', mode:'no-cors',
-        headers:{'Content-Type':'application/json'},
+        method:"POST", mode:"no-cors",
+        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           timestamp: new Date().toISOString(),
-          name: answers['q1']||respondentName, department: answers['q2']||'',
-          Q3:answers['q3']||'', Q4:answers['q4']||'', Q5:answers['q5']||'',
-          Q6:answers['q6']||'', Q7:answers['q7']||'', Q8:answers['q8']||'',
-          Q9:answers['q9']||'', Q10:answers['q10']||'', Q11:answers['q11']||'',
-          Q12:answers['q12']||'', ai_summary:summary
+          name: answers["q1"] || respondentName,
+          department: answers["q2"] || "",
+          Q3:answers["q3"]||"", Q4:answers["q4"]||"", Q5:answers["q5"]||"",
+          Q6:answers["q6"]||"", Q7:answers["q7"]||"", Q8:answers["q8"]||"",
+          Q9:answers["q9"]||"", Q10:answers["q10"]||"", Q11:answers["q11"]||"",
+          Q12:answers["q12"]||"", ai_summary:summary
         })
       });
-      sheetStatus = 'Responses saved ✓';
-    } catch(e){ sheetStatus = 'Could not save — please contact survey admin'; }
+      sheetStatus = "Responses saved";
+    } catch(e) { sheetStatus = "Could not save — please contact survey admin"; }
   }
-  document.getElementById('doneMeta').textContent = sheetStatus;
+  document.getElementById("doneMeta").textContent = sheetStatus;
   await speakTextAsync(summary);
 }
 
 // ── TTS ───────────────────────────────────────────────────────────────────────
 function speakText(text, onDone) {
-  stopMic(); isSpeaking = true; setStatus('speaking', 'Speaking…');
-  if(ELEVEN_KEY && ELEVEN_KEY.length > 10){
-    speakElevenLabs(text).then(function(){ isSpeaking=false; if(onDone) onDone(); });
+  stopMic();
+  isSpeaking = true;
+  setStatus("speaking", "Speaking...");
+  if (ELEVEN_KEY && ELEVEN_KEY.length > 10) {
+    speakElevenLabs(text).then(function() { isSpeaking = false; if (onDone) onDone(); });
   } else {
-    speakBrowser(text, function(){ isSpeaking=false; if(onDone) onDone(); });
+    speakBrowser(text, function() { isSpeaking = false; if (onDone) onDone(); });
   }
 }
 
-function speakTextAsync(text){ return new Promise(function(resolve){ speakText(text, resolve); }); }
+function speakTextAsync(text) { return new Promise(function(resolve) { speakText(text, resolve); }); }
 
 function speakBrowser(text, onDone) {
   var synth = window.speechSynthesis;
-  if(!synth){ if(onDone) onDone(); return; }
+  if (!synth) { if (onDone) onDone(); return; }
   synth.cancel();
   var utt = new SpeechSynthesisUtterance(text);
-  utt.rate=0.92; utt.pitch=1.0; utt.volume=1;
+  utt.rate = 0.92; utt.pitch = 1.0; utt.volume = 1;
   var voices = synth.getVoices();
-  var preferred = voices.find(function(v){ return v.name.includes('Samantha')||v.name.includes('Karen')||v.name.includes('Google US English'); });
-  if(preferred) utt.voice = preferred;
-  utt.onend = function(){ setStatus('idle',''); if(onDone) onDone(); };
-  utt.onerror = function(){ setStatus('idle',''); if(onDone) onDone(); };
+  var preferred = voices.find(function(v) { return v.name.includes("Samantha") || v.name.includes("Karen") || v.name.includes("Google US English"); });
+  if (preferred) utt.voice = preferred;
+  utt.onend = function() { setStatus("idle", ""); if (onDone) onDone(); };
+  utt.onerror = function() { setStatus("idle", ""); if (onDone) onDone(); };
   synth.speak(utt);
 }
 
 async function speakElevenLabs(text) {
   try {
-    var res = await fetch('https://api.elevenlabs.io/v1/text-to-speech/gJx1vCzNCD1EQHT212Ls', {
-      method: 'POST',
-      headers: { 'xi-api-key': ELEVEN_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+    var res = await fetch("https://api.elevenlabs.io/v1/text-to-speech/gJx1vCzNCD1EQHT212Ls", {
+      method:"POST",
+      headers:{"xi-api-key": ELEVEN_KEY, "Content-Type":"application/json"},
+      body: JSON.stringify({text: text, model_id:"eleven_multilingual_v2", voice_settings:{stability:0.5, similarity_boost:0.75}})
     });
-    if(!res.ok){
-      var err = await res.json();
-      console.error('ElevenLabs error:', err);
-      throw new Error('ElevenLabs failed');
-    }
+    if (!res.ok) { var err = await res.json(); console.error("ElevenLabs error:", err); throw new Error("ElevenLabs failed"); }
     var blob = await res.blob();
     var url = URL.createObjectURL(blob);
-    return new Promise(function(resolve){
+    return new Promise(function(resolve) {
       var audio = new Audio(url);
-      audio.onended = function(){ setStatus('idle',''); URL.revokeObjectURL(url); resolve(); };
-      audio.onerror = function(){ setStatus('idle',''); resolve(); };
+      audio.onended = function() { setStatus("idle", ""); URL.revokeObjectURL(url); resolve(); };
+      audio.onerror = function() { setStatus("idle", ""); resolve(); };
       audio.play();
     });
   } catch(e) {
-    console.error('ElevenLabs fallback to browser:', e);
-    return new Promise(function(resolve){ speakBrowser(text, resolve); });
+    console.error("ElevenLabs fallback:", e);
+    return new Promise(function(resolve) { speakBrowser(text, resolve); });
   }
 }
 
 // ── Claude API ────────────────────────────────────────────────────────────────
 async function callClaude(system, user) {
-  var res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': CLAUDE_KEY,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
+  var res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "x-api-key": CLAUDE_KEY,
+      "anthropic-version":"2023-06-01",
+      "anthropic-dangerous-direct-browser-access":"true"
     },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system: system, messages: [{ role: 'user', content: user }] })
+    body: JSON.stringify({model:"claude-sonnet-4-20250514", max_tokens:500, system:system, messages:[{role:"user", content:user}]})
   });
   var data = await res.json();
-  if(data.error) throw new Error(data.error.message);
-  return data.content.map(function(c){ return c.text||''; }).join('');
+  if (data.error) throw new Error(data.error.message);
+  return data.content.map(function(c) { return c.text || ""; }).join("");
 }
 
-window.addEventListener('DOMContentLoaded', function() {
-  if(window.speechSynthesis) window.speechSynthesis.getVoices();
-  document.getElementById('startBtn').addEventListener('click', beginSurvey);
-  document.getElementById('micBtn').addEventListener('click', toggleMic);
+window.addEventListener("DOMContentLoaded", function() {
+  if (window.speechSynthesis) window.speechSynthesis.getVoices();
+  document.getElementById("startBtn").addEventListener("click", beginSurvey);
+  document.getElementById("micBtn").addEventListener("click", toggleMic);
 });
 </script>
 </body>
