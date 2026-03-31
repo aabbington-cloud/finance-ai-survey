@@ -87,7 +87,7 @@
   <div class="start-screen" id="startScreen">
     <div class="start-title">How are you<br/>using AI?</div>
     <div class="start-subtitle">A short voice survey — about 5 to 7 minutes. Just speak your answers naturally and I'll guide you through.</div>
-    <button class="start-btn" onclick="beginSurvey()">Start Survey →</button>
+    <button class="start-btn" id="startBtn">Start Survey →</button>
     <div class="start-note">Works best in Chrome or Edge · Microphone required</div>
   </div>
   <div class="survey-screen hidden" id="surveyScreen">
@@ -306,7 +306,7 @@ async function callClaude(system,user){
   return data.content.map(c=>c.text||'').join('');
 }
 
-window.addEventListener('DOMContentLoaded',()=>{ if(window.speechSynthesis) window.speechSynthesis.getVoices(); });
+window.addEventListener('DOMContentLoaded',()=>{ if(window.speechSynthesis) window.speechSynthesis.getVoices(); document.getElementById('startBtn').addEventListener('click', beginSurvey); });
 </script>
 </body>
 </html>
