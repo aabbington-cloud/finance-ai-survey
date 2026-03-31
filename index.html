@@ -115,23 +115,41 @@ const SHEETS_URL  = "https://script.google.com/macros/s/AKfycbyn-nDPE3wwcTgnNyHm
 // ─────────────────────────────────────────────────────────────────────────────
 
 const QUESTIONS = [
-  { id:'q1',  num:1,  isName:true, text:'What is your full name?', spoken:'Welcome to the Finance AI Assessment. My name is Aria and I\'ll guide you through this short survey today. Let\'s start — what is your full name? Please spell it out so I can document it correctly.', options:null },
+  { id:'q1',  num:1,  isName:true, text:'What is your full name?', spoken:'Welcome to the Finance AI Assessment. My name is Aria and I'll guide you through this short survey today. Let's start — what is your full name? Please spell it out so I can document it correctly.', options:null },
   { id:'q2',  num:2,  text:'What department are you in?', spoken:'Great, thank you. And what department are you in?', options:null },
-  { id:'q3',  num:3,  text:'Which company-licensed AI tools do you currently use?', spoken:'Which company-licensed AI tools do you currently use for work? Your options are: ChatGPT, Glean, n8n, or none of these tools. You can name one or several.', options:['ChatGPT','Glean','n8n','I don\'t currently use any of these tools'] },
+  { id:'q3',  num:3,  text:'Which company-licensed AI tools do you currently use?', spoken:'Which company-licensed AI tools do you currently use for work? Your options are: ChatGPT, Glean, n8n, or none of these tools. You can name one or several.', options:['ChatGPT','Glean','n8n','I don't currently use any of these tools'] },
   { id:'q4',  num:4,  text:'What other tools with AI features do you use?', spoken:'What other tools or software do you use that have AI features? For example: Microsoft Copilot, Google Gemini, Claude, Notion AI, Salesforce AI, BI tools like Tableau or Power BI, coding assistants like GitHub Copilot, or none.', options:['Microsoft Copilot','Google Gemini','Claude','Notion AI','Salesforce AI','BI tools with AI','Coding assistants','None','Other'] },
   { id:'q5',  num:5,  text:'How often do you use AI tools day-to-day?', spoken:'How often do you use AI tools in your day-to-day work? Multiple times a day, about once a day, a few times a week, a few times a month, or rarely or never?', options:['Multiple times per day','About once per day','A few times per week','A few times per month','Rarely or never'] },
   { id:'q6',  num:6,  text:'What do you primarily use AI for?', spoken:'What do you primarily use AI for? Some examples: data analysis, automating repetitive tasks, writing emails or documents, research, workflow automation, creating reports or dashboards, or brainstorming. Name as many as apply.', options:['Data analysis','Automating tasks','Writing','Research','Workflow automation','Reports or dashboards','Brainstorming','Other'] },
   { id:'q7',  num:7,  text:'How much time does AI save you per week?', spoken:'How much time does AI save you on a typical week? More than 10 hours, 5 to 10 hours, 2 to 5 hours, less than 2 hours, or no measurable time savings yet?', options:['10+ hours','5-10 hours','2-5 hours','Less than 2 hours','No measurable time savings'] },
-  { id:'q8',  num:8,  text:'Have you built any repeatable AI workflows?', spoken:'Have you built or set up any repeatable AI workflows or automations? Yes, multiple workflows I use regularly; yes, one or two small automations; not yet but I\'m interested; or no and I\'m not sure how?', options:['Yes — multiple workflows','Yes — one or two','Not yet but interested','No and not sure how'] },
+  { id:'q8',  num:8,  text:'Have you built any repeatable AI workflows?', spoken:'Have you built or set up any repeatable AI workflows or automations? Yes, multiple workflows I use regularly; yes, one or two small automations; not yet but I'm interested; or no and I'm not sure how?', options:['Yes — multiple workflows','Yes — one or two','Not yet but interested','No and not sure how'] },
   { id:'q9',  num:9,  text:'How confident are you working with AI tools?', spoken:'How confident are you in working with AI tools? Very confident, somewhat confident, still a beginner, or not confident at all?', options:['Very confident','Somewhat confident','Beginner','Not confident'] },
-  { id:'q10', num:10, text:'What challenges are you experiencing with AI?', spoken:'What challenges or gaps are you experiencing with AI tools today? For example: not sure how to apply AI to your work, outputs aren\'t reliable, privacy concerns, lack of training, hard to automate end-to-end, too time-consuming, or limited access to the right systems.', options:['Not sure how to apply','Outputs not reliable','Privacy concerns','Lack of training','Hard to automate','Too time-consuming','Limited access','Other'] },
+  { id:'q10', num:10, text:'What challenges are you experiencing with AI?', spoken:'What challenges or gaps are you experiencing with AI tools today? For example: not sure how to apply AI to your work, outputs aren't reliable, privacy concerns, lack of training, hard to automate end-to-end, too time-consuming, or limited access to the right systems.', options:['Not sure how to apply','Outputs not reliable','Privacy concerns','Lack of training','Hard to automate','Too time-consuming','Limited access','Other'] },
   { id:'q11', num:11, text:'What would help you get more value from AI?', spoken:'What would help you get more value from AI? Options include: training sessions, role-specific examples, pre-built templates, better integrations, clear guidelines, dedicated support, or more time to experiment.', options:['Training sessions','Role-specific examples','Pre-built templates','Better integrations','Clear guidelines','Dedicated support','More time','Other'] },
-  { id:'q12', num:12, text:'Any final thoughts on your AI experience?', spoken:'Last question — is there anything else you\'d like to share about your experience with AI? This is completely optional, so feel free to say pass if you\'re done.', options:null }
+  { id:'q12', num:12, text:'Any final thoughts on your AI experience?', spoken:'Last question — is there anything else you'd like to share about your experience with AI? This is completely optional, so feel free to say pass if you're done.', options:null }
 ];
 
+// ── State ─────────────────────────────────────────────────────────────────────
 let currentQ=0, answers={}, respondentName='', recognition=null, isSpeaking=false;
-let autoListenTimer=null, silenceTimer=null, currentTranscript='';
+let autoListenTimer=null, silenceTimer=null, pausePromptTimer=null, secondPauseTimer=null;
+let currentTranscript='', pauseCount=0, followUpAsked=false;
 
+// ── Pause prompt phrases (warm, collegial) ────────────────────────────────────
+const PAUSE_PROMPTS_1 = [
+  'Take your time, I'm listening.',
+  'No rush at all — whenever you're ready.',
+  'I'm still here, go ahead whenever you're comfortable.'
+];
+const PAUSE_PROMPTS_2 = [
+  'Just to recap the question — ',
+  'Let me repeat that for you — ',
+  'Happy to ask again — '
+];
+
+// ── Repeat trigger words ──────────────────────────────────────────────────────
+const REPEAT_TRIGGERS = ['repeat','say that again','what was the question','can you repeat','again please','pardon','what did you say','say again','could you repeat','huh'];
+
+// ── Begin survey ──────────────────────────────────────────────────────────────
 function beginSurvey() {
   document.getElementById('startScreen').classList.add('hidden');
   document.getElementById('surveyScreen').classList.remove('hidden');
@@ -150,10 +168,11 @@ function updateDots(idx) {
 }
 
 function showQuestion(idx) {
-  stopMic(); clearTimers(); currentQ=idx; currentTranscript='';
-  const q = QUESTIONS[idx];
+  stopMic(); clearAllTimers();
+  currentQ=idx; currentTranscript=''; pauseCount=0; followUpAsked=false;
+  var q = QUESTIONS[idx];
   updateDots(idx);
-  const qtEl = document.getElementById('questionText');
+  var qtEl = document.getElementById('questionText');
   qtEl.classList.add('fading');
   setTimeout(function() {
     qtEl.textContent = q.text;
@@ -167,12 +186,12 @@ function showQuestion(idx) {
   });
 }
 
+// ── UI helpers ────────────────────────────────────────────────────────────────
 function setWaveform(state) { document.getElementById('waveform').className = 'waveform '+state; }
 
 function setStatus(state, text) {
   var el = document.getElementById('statusLabel');
-  el.textContent = text;
-  el.className = 'status-label '+state;
+  el.textContent = text; el.className = 'status-label '+state;
   setWaveform(state);
   var btn = document.getElementById('micBtn');
   btn.className = 'mic-btn '+(state==='listening'?'listening':(state==='speaking'||state==='confirming')?'speaking':'');
@@ -184,6 +203,7 @@ function setTranscript(text, filled) {
   el.className = 'transcript-bubble '+(filled?'filled':'empty');
 }
 
+// ── Mic ───────────────────────────────────────────────────────────────────────
 function toggleMic() { if(recognition){ stopMic(); } else { startListening(); } }
 
 function startListening() {
@@ -194,12 +214,19 @@ function startListening() {
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = 'en-US';
+
   recognition.onstart = function() {
     setStatus('listening','Listening…');
-    document.getElementById('micHint').textContent = 'Speak now — I\'ll move on when you\'re done';
+    document.getElementById('micHint').textContent = 'Speak now — I'll move on when you're done';
+    // Start pause detection — 8 seconds of nothing
+    schedulePausePrompt();
   };
+
   recognition.onresult = function(e) {
+    // They spoke — reset pause timers
+    clearTimeout(pausePromptTimer); clearTimeout(secondPauseTimer);
     clearTimeout(silenceTimer);
+
     var interim='', final='';
     for(var i=e.resultIndex; i<e.results.length; i++){
       if(e.results[i].isFinal) final += e.results[i][0].transcript;
@@ -207,11 +234,25 @@ function startListening() {
     }
     var text = (currentTranscript+' '+(final||interim)).trim();
     setTranscript(text, true);
+
     if(final){
       currentTranscript = (currentTranscript+' '+final).trim();
-      silenceTimer = setTimeout(function(){ processAnswer(currentTranscript); }, 2000);
+      // Check for repeat request
+      var lower = final.toLowerCase().trim();
+      var isRepeat = REPEAT_TRIGGERS.some(function(t){ return lower.includes(t); });
+      if(isRepeat){
+        currentTranscript = '';
+        setTranscript('', false);
+        silenceTimer = setTimeout(function(){ handleRepeatRequest(); }, 500);
+      } else {
+        // Wait 2s of silence then process
+        silenceTimer = setTimeout(function(){ processAnswer(currentTranscript); }, 2000);
+        // Reset pause prompt for next stretch of silence
+        schedulePausePrompt();
+      }
     }
   };
+
   recognition.onerror = function(e){ if(e.error !== 'no-speech') setStatus('idle','Mic error: '+e.error); };
   recognition.onend = function(){ if(recognition){ try{ recognition.start(); }catch(e){} } };
   recognition.start();
@@ -223,50 +264,133 @@ function stopMic() {
   document.getElementById('micHint').textContent = 'Click mic to speak, or wait for auto-listen';
 }
 
-function clearTimers(){ clearTimeout(autoListenTimer); clearTimeout(silenceTimer); }
+function clearAllTimers(){
+  clearTimeout(autoListenTimer); clearTimeout(silenceTimer);
+  clearTimeout(pausePromptTimer); clearTimeout(secondPauseTimer);
+}
 
-async function processAnswer(rawText) {
+// ── Pause detection ───────────────────────────────────────────────────────────
+function schedulePausePrompt() {
+  clearTimeout(pausePromptTimer); clearTimeout(secondPauseTimer);
+  pausePromptTimer = setTimeout(function(){ handleFirstPause(); }, 8000);
+}
+
+async function handleFirstPause() {
+  if(isSpeaking) return;
+  pauseCount++;
+  var prompt = PAUSE_PROMPTS_1[Math.floor(Math.random() * PAUSE_PROMPTS_1.length)];
+  await speakTextAsync(prompt);
+  // If still no answer after another 8s, re-read the question
+  secondPauseTimer = setTimeout(function(){ handleSecondPause(); }, 8000);
+  startListening();
+}
+
+async function handleSecondPause() {
+  if(isSpeaking) return;
+  var q = QUESTIONS[currentQ];
+  var prefix = PAUSE_PROMPTS_2[Math.floor(Math.random() * PAUSE_PROMPTS_2.length)];
+  await speakTextAsync(prefix + q.spoken);
+  autoListenTimer = setTimeout(function(){ startListening(); }, 400);
+}
+
+// ── Repeat request ────────────────────────────────────────────────────────────
+async function handleRepeatRequest() {
   stopMic();
+  var q = QUESTIONS[currentQ];
+  await speakTextAsync('Of course! ' + q.spoken);
+  autoListenTimer = setTimeout(function(){ startListening(); }, 400);
+}
+
+// ── Process answer ────────────────────────────────────────────────────────────
+async function processAnswer(rawText) {
+  stopMic(); clearAllTimers();
+
   if(!rawText || rawText.trim() === ''){
-    setStatus('listening', 'I didn\'t catch that — please try again');
-    autoListenTimer = setTimeout(function(){ startListening(); }, 1000);
+    await speakTextAsync('I didn't quite catch that — no worries, go ahead whenever you're ready.');
+    autoListenTimer = setTimeout(function(){ startListening(); }, 400);
     return;
   }
+
   var q = QUESTIONS[currentQ];
+  var lower = rawText.toLowerCase().trim();
+
+  // Handle skip
+  if(lower === 'skip' || lower === 'pass' || lower === 'next'){
+    answers[q.id] = 'Skipped';
+    await speakTextAsync('No problem, we'll move on.');
+    if(currentQ < QUESTIONS.length-1){ setTimeout(function(){ showQuestion(currentQ+1); }, 400); }
+    else { setTimeout(function(){ finishSurvey(); }, 400); }
+    return;
+  }
+
   var cleanedAnswer = rawText.trim();
+
+  // Use Claude to: 1) check if answer is too vague, 2) map to options, 3) clean up
   try {
-    var sysPrompt = q.options
-      ? 'You are a survey assistant. Map the user\'s spoken words to the best matching answer choices. Return ONLY JSON: {"matched":["exact option text"],"summary":"5-10 word summary"}. Match as many options as apply.'
-      : 'You are a survey assistant. Clean up the transcription. Return ONLY JSON: {"matched":[],"summary":"their answer cleaned up, max 20 words"}';
     var optList = q.options ? 'Options: '+q.options.join(', ') : '';
-    var resp = await callClaude(sysPrompt, 'Question: "'+q.text+'"\n'+optList+'\nUser said: "'+rawText+'"\nReturn JSON only.');
+    var sysPrompt = 'You are a warm, conversational survey assistant conducting a voice survey. ' +
+      'Evaluate the user's answer and return ONLY JSON with these fields: ' +
+      '{"matched": ["option text"], "summary": "cleaned up answer max 20 words", ' +
+      '"is_vague": true/false, "followup": "a warm 1-sentence follow-up question if vague, else null"}. ' +
+      'is_vague should be true if the answer is unclear, too short (like just "yes" or "I don't know"), or doesn't address the question. ' +
+      'If is_vague is true, write a natural follow-up question in followup. ' +
+      (q.options ? 'Match matched to the closest options. ' : 'Leave matched as empty array. ') +
+      'Keep the tone warm and collegial, like a friendly colleague.';
+
+    var resp = await callClaude(sysPrompt,
+      'Question: "'+q.text+'"
+'+optList+'
+User said: "'+rawText+'"
+Return JSON only.'
+    );
     var parsed = JSON.parse(resp.replace(/```json|```/g,'').trim());
+
+    // If vague and we haven't asked a follow-up yet, ask one
+    if(parsed.is_vague && !followUpAsked && parsed.followup){
+      followUpAsked = true;
+      setTranscript(rawText, true);
+      await speakTextAsync(parsed.followup);
+      currentTranscript = rawText + ' '; // keep what they said so far
+      autoListenTimer = setTimeout(function(){ startListening(); }, 400);
+      return;
+    }
+
+    // Answer is good — save it
     answers[q.id] = (parsed.matched && parsed.matched.length > 0) ? parsed.matched.join(', ') : parsed.summary;
     cleanedAnswer = parsed.summary || rawText;
     if(q.isName) respondentName = cleanedAnswer.split(' ')[0];
-  } catch(e){ answers[q.id]=rawText; cleanedAnswer=rawText; if(q.isName) respondentName=rawText.split(' ')[0]; }
 
+  } catch(e){
+    answers[q.id] = rawText;
+    cleanedAnswer = rawText;
+    if(q.isName) respondentName = rawText.split(' ')[0];
+  }
+
+  // Confirm what was heard
   setTranscript(cleanedAnswer, true);
   setStatus('confirming', 'Got it — confirming your answer…');
-  var confirms = ['Got it — ','I\'ve noted that — ','Thanks — ','Recorded — ','I heard — '];
-  var confirmText = q.isName ? 'Nice to meet you, '+cleanedAnswer.split(' ')[0]+'!' : confirms[currentQ % confirms.length]+cleanedAnswer+'.';
+  var confirms = ['Got it — ','I've noted that — ','Thanks for sharing — ','Recorded — ','I heard — '];
+  var confirmText = q.isName
+    ? 'Nice to meet you, '+cleanedAnswer.split(' ')[0]+'! Great to have you here.'
+    : confirms[currentQ % confirms.length] + cleanedAnswer + '.';
   await speakTextAsync(confirmText);
 
   if(currentQ < QUESTIONS.length-1){ setTimeout(function(){ showQuestion(currentQ+1); }, 400); }
   else { setTimeout(function(){ finishSurvey(); }, 400); }
 }
 
+// ── Finish survey ─────────────────────────────────────────────────────────────
 async function finishSurvey() {
-  stopMic();
+  stopMic(); clearAllTimers();
   document.getElementById('surveyScreen').classList.add('hidden');
   document.getElementById('doneScreen').classList.remove('hidden');
   document.getElementById('doneTitle').textContent = 'Thank you'+(respondentName?', '+respondentName:'')+'!';
-  await speakTextAsync('Thank you so much'+(respondentName?', '+respondentName:'')+'! Your responses have been recorded. Let me generate a quick summary for you.');
+  await speakTextAsync('And that's all the questions! Thank you so much'+(respondentName?', '+respondentName:'')+'. Your responses have been recorded. Let me put together a quick summary for you.');
   var summary = '';
   try {
     var block = QUESTIONS.map(function(q){ return 'Q'+q.num+': '+q.text+'\nAnswer: '+(answers[q.id]||'No answer'); }).join('\n\n');
     summary = await callClaude(
-      'You are an AI analyst summarizing a finance employee survey. Write 3-4 sentences summarizing this person\'s AI maturity, usage patterns, and top gaps. Be specific and address them directly using "you".',
+      'You are an AI analyst summarizing a finance employee survey. Write 3-4 sentences summarizing this person's AI maturity, usage patterns, and top gaps. Be specific and address them directly using "you".',
       'Respondent: '+respondentName+'\n\n'+block
     );
   } catch(e){ summary = 'Summary could not be generated at this time.'; }
@@ -293,10 +417,9 @@ async function finishSurvey() {
   await speakTextAsync(summary);
 }
 
+// ── TTS ───────────────────────────────────────────────────────────────────────
 function speakText(text, onDone) {
-  stopMic();
-  isSpeaking = true;
-  setStatus('speaking', 'Speaking…');
+  stopMic(); isSpeaking = true; setStatus('speaking', 'Speaking…');
   if(ELEVEN_KEY && ELEVEN_KEY.length > 10){
     speakElevenLabs(text).then(function(){ isSpeaking=false; if(onDone) onDone(); });
   } else {
@@ -346,6 +469,7 @@ async function speakElevenLabs(text) {
   }
 }
 
+// ── Claude API ────────────────────────────────────────────────────────────────
 async function callClaude(system, user) {
   var res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
