@@ -7,823 +7,306 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #161a23;
-    --surface2: #1e2330;
-    --border: rgba(255,255,255,0.07);
-    --accent: #4f8ef7;
-    --accent2: #7b5ea7;
-    --text: #e8eaf0;
-    --muted: #7a8099;
-    --success: #3ecf8e;
-    --danger: #f56565;
-    --radius: 14px;
+    --bg: #0d0f14; --surface: #161a23; --surface2: #1e2330;
+    --border: rgba(255,255,255,0.07); --accent: #4f8ef7; --accent2: #7b5ea7;
+    --text: #e8eaf0; --muted: #7a8099; --success: #3ecf8e;
+    --danger: #f56565; --amber: #f6ad55;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; }
-
   body {
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-    min-height: 100vh; padding: 40px 20px 60px;
-    background: radial-gradient(ellipse at 20% 10%, rgba(79,142,247,0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 80%, rgba(123,94,167,0.07) 0%, transparent 60%),
-                var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 20% 20%, rgba(79,142,247,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 80%, rgba(123,94,167,0.06) 0%, transparent 55%), var(--bg);
   }
-
-  .shell {
-    width: 100%; max-width: 680px;
-    display: flex; flex-direction: column; gap: 0;
-  }
-
-  /* ── Header ── */
-  .header {
-    text-align: center; padding: 0 0 36px;
-  }
-  .header-eyebrow {
-    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 12px; font-weight: 500;
-  }
-  .header h1 {
-    font-family: 'DM Serif Display', serif; font-size: clamp(28px, 5vw, 40px);
-    font-weight: 400; line-height: 1.15; color: var(--text);
-    margin-bottom: 12px;
-  }
-  .header p { font-size: 15px; color: var(--muted); max-width: 480px; margin: 0 auto; }
-
-  /* ── Progress ── */
-  .progress-wrap { margin-bottom: 28px; }
-  .progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .progress-label { font-size: 13px; color: var(--muted); }
-  .progress-count { font-size: 13px; color: var(--accent); font-weight: 500; }
-  .progress-bar { height: 3px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.5s ease; }
-
-  /* ── Card ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 32px 32px 28px;
-    transition: opacity 0.3s ease;
-  }
-  .card.fading { opacity: 0; }
-
-  .q-num { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-  .q-text {
-    font-family: 'DM Serif Display', serif; font-size: clamp(18px, 3vw, 22px);
-    font-weight: 400; line-height: 1.35; color: var(--text);
-    margin-bottom: 6px;
-  }
-  .q-hint { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
-
-  /* ── Options ── */
-  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
-  .option {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    user-select: none;
-  }
-  .option:hover { border-color: rgba(79,142,247,0.4); background: rgba(79,142,247,0.04); }
-  .option.selected { border-color: var(--accent); background: rgba(79,142,247,0.08); }
-  .option-box {
-    width: 18px; height: 18px; border-radius: 4px;
-    border: 1.5px solid var(--muted); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .option.radio .option-box { border-radius: 50%; }
-  .option.selected .option-box { border-color: var(--accent); background: var(--accent); }
-  .option-box svg { display: none; }
-  .option.selected .option-box svg { display: block; }
-  .option-label { font-size: 15px; color: var(--text); }
-
-  /* ── Other input ── */
-  .other-input {
-    margin-top: 8px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 14px;
-    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
-    width: 100%; outline: none; transition: border-color 0.15s;
-    display: none;
-  }
-  .other-input:focus { border-color: var(--accent); }
-  .other-input.visible { display: block; }
-
-  /* ── Open text ── */
-  .open-textarea {
-    width: 100%; min-height: 120px; resize: vertical;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 16px;
-    font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text);
-    outline: none; transition: border-color 0.15s; line-height: 1.6;
-    margin-bottom: 24px;
-  }
-  .open-textarea:focus { border-color: var(--accent); }
-
-  /* ── Voice bar ── */
-  .voice-bar {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 16px 20px;
-    display: flex; align-items: center; gap: 14px;
-    margin-bottom: 24px;
-  }
-  .mic-btn {
-    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
-    background: var(--surface); border: 1.5px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: all 0.2s; color: var(--muted);
-  }
+  .shell { width: 100%; max-width: 580px; display: flex; flex-direction: column; align-items: center; padding: 32px 24px; text-align: center; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 32px; font-weight: 500; }
+  .progress-dots { display: flex; gap: 6px; margin-bottom: 40px; justify-content: center; flex-wrap: wrap; max-width: 320px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); transition: all 0.4s ease; }
+  .dot.done { background: var(--accent2); border-color: var(--accent2); }
+  .dot.active { background: var(--accent); border-color: var(--accent); transform: scale(1.4); }
+  .question-text { font-family: 'DM Serif Display', serif; font-size: clamp(20px, 4vw, 28px); font-weight: 400; line-height: 1.3; color: var(--text); margin-bottom: 12px; min-height: 80px; transition: opacity 0.3s ease; }
+  .question-text.fading { opacity: 0; }
+  .question-num { font-size: 12px; color: var(--muted); margin-bottom: 32px; letter-spacing: 0.05em; }
+  .waveform { display: flex; align-items: center; justify-content: center; gap: 4px; height: 64px; margin-bottom: 28px; }
+  .waveform-bar { width: 4px; border-radius: 99px; background: var(--accent); height: 8px; transition: background 0.3s; }
+  .waveform.idle .waveform-bar { animation: none; height: 4px; background: var(--surface2); }
+  .waveform.speaking .waveform-bar { animation: speak-wave 0.8s ease-in-out infinite; background: var(--accent); }
+  .waveform.speaking .waveform-bar:nth-child(1){animation-delay:0s}
+  .waveform.speaking .waveform-bar:nth-child(2){animation-delay:.1s}
+  .waveform.speaking .waveform-bar:nth-child(3){animation-delay:.2s}
+  .waveform.speaking .waveform-bar:nth-child(4){animation-delay:.08s}
+  .waveform.speaking .waveform-bar:nth-child(5){animation-delay:.16s}
+  .waveform.speaking .waveform-bar:nth-child(6){animation-delay:.24s}
+  .waveform.speaking .waveform-bar:nth-child(7){animation-delay:.05s}
+  .waveform.speaking .waveform-bar:nth-child(8){animation-delay:.12s}
+  .waveform.speaking .waveform-bar:nth-child(9){animation-delay:.2s}
+  .waveform.speaking .waveform-bar:nth-child(10){animation-delay:.28s}
+  .waveform.speaking .waveform-bar:nth-child(11){animation-delay:.04s}
+  .waveform.speaking .waveform-bar:nth-child(12){animation-delay:.15s}
+  .waveform.listening .waveform-bar { animation: listen-wave 0.6s ease-in-out infinite; background: var(--success); }
+  .waveform.listening .waveform-bar:nth-child(odd){animation-delay:.1s}
+  .waveform.listening .waveform-bar:nth-child(3n){animation-delay:.2s}
+  .waveform.confirming .waveform-bar { animation: speak-wave 0.6s ease-in-out infinite; background: var(--amber); }
+  .waveform.confirming .waveform-bar:nth-child(odd){animation-delay:.08s}
+  @keyframes speak-wave { 0%,100%{height:6px} 50%{height:40px} }
+  @keyframes listen-wave { 0%,100%{height:8px} 50%{height:48px} }
+  .status-label { font-size: 13px; color: var(--muted); margin-bottom: 20px; min-height: 20px; transition: color 0.3s; letter-spacing: 0.04em; }
+  .status-label.listening { color: var(--success); }
+  .status-label.confirming { color: var(--amber); }
+  .status-label.speaking { color: var(--accent); }
+  .transcript-bubble { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px 22px; font-size: 15px; color: var(--text); line-height: 1.5; min-height: 56px; width: 100%; margin-bottom: 24px; transition: opacity 0.3s, border-color 0.3s; }
+  .transcript-bubble.empty { opacity: 0.3; font-style: italic; color: var(--muted); }
+  .transcript-bubble.filled { border-color: rgba(79,142,247,0.3); opacity: 1; }
+  .transcript-bubble.confirming { border-color: rgba(246,173,85,0.4); }
+  .mic-btn { width: 64px; height: 64px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; color: var(--muted); margin-bottom: 16px; }
   .mic-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .mic-btn.listening { border-color: var(--danger); color: var(--danger); background: rgba(245,101,101,0.08); animation: pulse 1.5s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(245,101,101,0.3)} 50%{box-shadow:0 0 0 8px rgba(245,101,101,0)} }
-  .mic-btn.speaking { border-color: var(--success); color: var(--success); background: rgba(62,207,142,0.08); }
-  .voice-transcript { flex: 1; font-size: 14px; color: var(--muted); font-style: italic; }
-  .voice-status { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-  /* ── Actions ── */
-  .actions { display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
-  .btn {
-    padding: 11px 24px; border-radius: 10px;
-    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-    cursor: pointer; transition: all 0.15s; border: none; outline: none;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #6499f9; }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-  .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
-
-  /* ── Name screen ── */
-  .name-input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 16px;
-    font-family: 'DM Sans', sans-serif; font-size: 16px; color: var(--text);
-    outline: none; transition: border-color 0.15s; margin-bottom: 24px;
-  }
-  .name-input:focus { border-color: var(--accent); }
-
-  /* ── Done screen ── */
-  .done-screen { text-align: center; padding: 40px 20px; }
-  .done-icon { font-size: 52px; margin-bottom: 20px; }
-  .done-screen h2 { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 12px; }
-  .done-screen p { font-size: 15px; color: var(--muted); max-width: 400px; margin: 0 auto 28px; }
-
-  /* ── Error banner ── */
-  .error-banner {
-    background: rgba(245,101,101,0.1); border: 1px solid rgba(245,101,101,0.3);
-    border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #fc8181;
-    margin-bottom: 16px; display: none;
-  }
-  .error-banner.visible { display: block; }
-
-  /* ── Config overlay ── */
-  .config-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-    display: flex; align-items: center; justify-content: center; z-index: 100;
-    padding: 20px;
-  }
-  .config-panel {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px; max-width: 520px; width: 100%;
-  }
-  .config-panel h2 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 8px; }
-  .config-panel p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
-  .config-field { margin-bottom: 16px; }
-  .config-label { font-size: 13px; color: var(--muted); margin-bottom: 6px; display: block; }
-  .config-input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 14px;
-    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
-    outline: none; transition: border-color 0.15s;
-  }
-  .config-input:focus { border-color: var(--accent); }
-  .config-note { font-size: 12px; color: var(--muted); margin-top: 5px; }
-  .config-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-
-  .speaking-indicator {
-    display: inline-flex; gap: 3px; align-items: flex-end; height: 16px;
-  }
-  .speaking-indicator span {
-    width: 3px; background: var(--success); border-radius: 2px;
-    animation: wave 1s ease-in-out infinite;
-  }
-  .speaking-indicator span:nth-child(2) { animation-delay: 0.15s; }
-  .speaking-indicator span:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes wave {
-    0%,100%{height:4px} 50%{height:14px}
-  }
-
-  @media (max-width: 500px) {
-    .card { padding: 22px 18px 20px; }
-    body { padding: 24px 12px 48px; }
-  }
+  .mic-btn.listening { border-color: var(--success); color: var(--success); background: rgba(62,207,142,0.08); animation: mic-pulse 1.5s ease-in-out infinite; }
+  .mic-btn.speaking { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.08); }
+  @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(62,207,142,0.3)} 50%{box-shadow:0 0 0 12px rgba(62,207,142,0)} }
+  .mic-hint { font-size: 12px; color: var(--muted); }
+  .start-screen { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+  .start-title { font-family: 'DM Serif Display', serif; font-size: clamp(28px, 5vw, 42px); line-height: 1.2; margin-bottom: 8px; }
+  .start-subtitle { font-size: 15px; color: var(--muted); max-width: 400px; line-height: 1.6; }
+  .start-btn { margin-top: 16px; padding: 16px 40px; border-radius: 99px; background: var(--accent); color: #fff; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; }
+  .start-btn:hover { background: #6499f9; transform: translateY(-1px); }
+  .start-note { font-size: 12px; color: var(--muted); }
+  .survey-screen { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .done-screen { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
+  .done-icon { font-size: 48px; }
+  .done-title { font-family: 'DM Serif Display', serif; font-size: 28px; }
+  .done-summary { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; font-size: 14px; color: var(--muted); line-height: 1.7; text-align: left; width: 100%; }
+  .done-meta { font-size: 12px; color: var(--muted); }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
-
-<!-- Config overlay -->
-<div class="config-overlay" id="configOverlay">
-  <div class="config-panel">
-    <h2>Setup API Keys</h2>
-    <p>These keys are stored only in your browser session and never sent anywhere except the respective APIs.</p>
-    <div class="config-field">
-      <label class="config-label">Claude API Key <span style="color:var(--danger)">*</span></label>
-      <input class="config-input" type="password" id="cfgClaude" placeholder="sk-ant-..."/>
-      <div class="config-note">Get yours at console.anthropic.com → API Keys</div>
-    </div>
-    <div class="config-field">
-      <label class="config-label">ElevenLabs API Key <span style="color:var(--muted)">(optional — uses browser voice if blank)</span></label>
-      <input class="config-input" type="password" id="cfgEleven" placeholder="..."/>
-      <div class="config-note">Free tier at elevenlabs.io. Leave blank to use browser TTS.</div>
-    </div>
-    <div class="config-field">
-      <label class="config-label">Google Sheets Webhook URL <span style="color:var(--muted)">(optional)</span></label>
-      <input class="config-input" type="text" id="cfgSheets" placeholder="https://script.google.com/macros/s/.../exec"/>
-      <div class="config-note">Deploy a Google Apps Script web app to receive POST data. Leave blank to skip auto-submit.</div>
-    </div>
-    <div id="cfgError" class="error-banner"></div>
-    <div class="config-actions">
-      <button class="btn btn-primary" onclick="saveConfig()">Continue →</button>
-    </div>
-  </div>
-</div>
-
 <div class="shell">
-  <div class="header">
-    <div class="header-eyebrow">Finance Team · AI Assessment</div>
-    <h1>How are you using AI?</h1>
-    <p>This short survey helps us understand your current AI usage, skill level, and what would help you get more value from these tools.</p>
+  <div class="eyebrow">Finance Team · AI Assessment</div>
+  <div class="start-screen" id="startScreen">
+    <div class="start-title">How are you<br/>using AI?</div>
+    <div class="start-subtitle">A short voice survey — about 5 to 7 minutes. Just speak your answers naturally and I'll guide you through.</div>
+    <button class="start-btn" onclick="beginSurvey()">Start Survey →</button>
+    <div class="start-note">Works best in Chrome or Edge · Microphone required</div>
   </div>
-
-  <div class="progress-wrap" id="progressWrap" style="display:none">
-    <div class="progress-meta">
-      <span class="progress-label" id="progressLabel">Question 1 of 10</span>
-      <span class="progress-count" id="progressCount">10%</span>
+  <div class="survey-screen hidden" id="surveyScreen">
+    <div class="progress-dots" id="progressDots"></div>
+    <div class="question-text" id="questionText"></div>
+    <div class="question-num" id="questionNum"></div>
+    <div class="waveform idle" id="waveform">
+      <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
+      <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
+      <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
+      <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+    <div class="status-label" id="statusLabel">Getting ready…</div>
+    <div class="transcript-bubble empty" id="transcriptBubble">Your answer will appear here</div>
+    <button class="mic-btn" id="micBtn" onclick="toggleMic()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="23"/>
+        <line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
+    </button>
+    <div class="mic-hint" id="micHint">Click mic to speak, or wait for auto-listen</div>
   </div>
-
-  <div id="mainContent"></div>
+  <div class="done-screen hidden" id="doneScreen">
+    <div class="done-icon">✅</div>
+    <div class="done-title" id="doneTitle">Thank you!</div>
+    <div class="done-summary" id="doneSummary">Generating your summary…</div>
+    <div class="done-meta" id="doneMeta"></div>
+  </div>
 </div>
-
 <script>
-// ── Config ──────────────────────────────────────────────────────────────────
-let CONFIG = { claude: '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', eleven: 'sk_e4a9f0a811cf6a387a660f885527187cb10ad712fee2f991', sheets: 'https://script.google.com/macros/s/AKfycbyn-nDPE3wwcTgnNyHmwuOP4Dy8tqXdKRnkG_boUZJcpU__c5QTXcytHLT_-gxCWXlfxg/exec' };
-let respondentName = '';
-let answers = {};
-let currentQ = -1; // -1 = name screen
-let isSpeaking = false;
-let recognition = null;
-let speechSynthesis = window.speechSynthesis;
+let CONFIG = { claude: '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
+', eleven: 'sk_e4a9f0a811cf6a387a660f885527187cb10ad712fee2f991', sheets: 'https://script.google.com/macros/s/AKfycbyn-nDPE3wwcTgnNyHmwuOP4Dy8tqXdKRnkG_boUZJcpU__c5QTXcytHLT_-gxCWXlfxg/exec' };
 
 const QUESTIONS = [
-  {
-    id: 'q1', num: 1,
-    text: 'What is your full name?',
-    hint: 'Spell it out so we can document it correctly — you can type or speak',
-    type: 'open',
-    isName: true
-  },
-  {
-    id: 'q2', num: 2,
-    text: 'What department are you in?',
-    hint: 'You can type or speak your answer',
-    type: 'open'
-  },
-  {
-    id: 'q3', num: 3,
-    text: 'Which company-licensed AI tools do you currently use for work?',
-    hint: 'Select all that apply',
-    type: 'multi',
-    options: ['ChatGPT','Glean','n8n','I don\'t currently use any of these tools']
-  },
-  {
-    id: 'q4', num: 4,
-    text: 'What other tools or software do you use that have AI features?',
-    hint: 'Select all that apply',
-    type: 'multi',
-    options: ['Microsoft Copilot (Excel, PowerPoint, Outlook, etc.)','Google Gemini (Docs, Sheets, Gmail, etc.)','Claude','Notion AI','Salesforce AI features','BI tools with AI (Tableau, Power BI, etc.)','Coding / scripting assistants (GitHub Copilot, etc.)','I don\'t use any other AI-enabled tools','Other'],
-    hasOther: true
-  },
-  {
-    id: 'q5', num: 5,
-    text: 'How often do you use AI tools in your day-to-day work?',
-    hint: 'Select one',
-    type: 'single',
-    options: ['Multiple times per day','About once per day','A few times per week','A few times per month','Rarely or never']
-  },
-  {
-    id: 'q6', num: 6,
-    text: 'What do you primarily use AI for?',
-    hint: 'Select all that apply',
-    type: 'multi',
-    options: ['Data analysis or spreadsheet validation','Automating repetitive tasks','Writing (emails, docs, summaries)','Research / answering questions','Workflow automation (connecting systems/tools)','Creating reports or dashboards','Brainstorming / problem solving','Other'],
-    hasOther: true
-  },
-  {
-    id: 'q7', num: 7,
-    text: 'How much time does AI save you on a typical week?',
-    hint: 'Select one',
-    type: 'single',
-    options: ['10+ hours','5–10 hours','2–5 hours','Less than 2 hours','No measurable time savings yet']
-  },
-  {
-    id: 'q8', num: 8,
-    text: 'Have you built or set up any repeatable AI workflows or automations?',
-    hint: 'Select one',
-    type: 'single',
-    options: ['Yes — multiple workflows I use regularly','Yes — one or two small automations','Not yet, but I\'m interested','No, and I\'m not sure how']
-  },
-  {
-    id: 'q9', num: 9,
-    text: 'How confident are you in working with AI tools?',
-    hint: 'Select one',
-    type: 'single',
-    options: ['Very confident — I can troubleshoot and improve outputs','Somewhat confident — I can use them effectively for common tasks','Beginner — I\'m still learning basics','Not confident — I don\'t really use them']
-  },
-  {
-    id: 'q10', num: 10,
-    text: 'What challenges or gaps are you experiencing with AI tools today?',
-    hint: 'Select all that apply',
-    type: 'multi',
-    options: ['Not sure how to apply AI to my work','Outputs aren\'t accurate or reliable enough','Data/privacy concerns','Lack of training or examples','Hard to automate end-to-end processes','Too time-consuming to learn/use','Limited access to the right systems','Other'],
-    hasOther: true
-  },
-  {
-    id: 'q11', num: 11,
-    text: 'What would help you get more value from AI?',
-    hint: 'Select all that apply',
-    type: 'multi',
-    options: ['Training sessions or workshops','Role-specific use case examples','Pre-built workflows or templates','Better tool integrations','Clear guidelines / best practices','Dedicated support or office hours','More time to experiment','Other'],
-    hasOther: true
-  },
-  {
-    id: 'q12', num: 12,
-    text: 'Anything else you\'d like to share about your experience with AI?',
-    hint: 'Optional — you can type or speak your answer',
-    type: 'open'
-  }
+  { id:'q1', num:1, isName:true, text:'What is your full name?', spoken:'Welcome to the Finance AI Assessment. My name is Aria and I\'ll guide you through this short survey today. Let\'s start — what is your full name? Please spell it out so I can document it correctly.', options:null },
+  { id:'q2', num:2, text:'What department are you in?', spoken:'Great, thank you. And what department are you in?', options:null },
+  { id:'q3', num:3, text:'Which company-licensed AI tools do you currently use?', spoken:'Which company-licensed AI tools do you currently use for work? Your options are: ChatGPT, Glean, n8n, or none of these tools. You can name one or several.', options:['ChatGPT','Glean','n8n','I don\'t currently use any of these tools'] },
+  { id:'q4', num:4, text:'What other tools with AI features do you use?', spoken:'What other tools or software do you use that have AI features? For example: Microsoft Copilot, Google Gemini, Claude, Notion AI, Salesforce AI, BI tools like Tableau or Power BI, coding assistants like GitHub Copilot, or none. Feel free to name anything.', options:['Microsoft Copilot','Google Gemini','Claude','Notion AI','Salesforce AI','BI tools with AI','Coding assistants','None','Other'] },
+  { id:'q5', num:5, text:'How often do you use AI tools day-to-day?', spoken:'How often do you use AI tools in your day-to-day work? Multiple times a day, about once a day, a few times a week, a few times a month, or rarely or never?', options:['Multiple times per day','About once per day','A few times per week','A few times per month','Rarely or never'] },
+  { id:'q6', num:6, text:'What do you primarily use AI for?', spoken:'What do you primarily use AI for? Some examples: data analysis, automating repetitive tasks, writing emails or documents, research, workflow automation, creating reports or dashboards, or brainstorming. Name as many as apply.', options:['Data analysis','Automating tasks','Writing','Research','Workflow automation','Reports or dashboards','Brainstorming','Other'] },
+  { id:'q7', num:7, text:'How much time does AI save you per week?', spoken:'How much time does AI save you on a typical week? More than 10 hours, 5 to 10 hours, 2 to 5 hours, less than 2 hours, or no measurable time savings yet?', options:['10+ hours','5-10 hours','2-5 hours','Less than 2 hours','No measurable time savings'] },
+  { id:'q8', num:8, text:'Have you built any repeatable AI workflows?', spoken:'Have you built or set up any repeatable AI workflows or automations? Yes, multiple workflows I use regularly; yes, one or two small automations; not yet but I\'m interested; or no and I\'m not sure how?', options:['Yes — multiple workflows','Yes — one or two','Not yet but interested','No and not sure how'] },
+  { id:'q9', num:9, text:'How confident are you working with AI tools?', spoken:'How confident are you in working with AI tools? Very confident, somewhat confident, still a beginner, or not confident at all?', options:['Very confident','Somewhat confident','Beginner','Not confident'] },
+  { id:'q10', num:10, text:'What challenges are you experiencing with AI?', spoken:'What challenges or gaps are you experiencing with AI tools today? For example: not sure how to apply AI to your work, outputs aren\'t reliable, privacy concerns, lack of training, hard to automate end-to-end, too time-consuming, or limited access to the right systems.', options:['Not sure how to apply','Outputs not reliable','Privacy concerns','Lack of training','Hard to automate','Too time-consuming','Limited access','Other'] },
+  { id:'q11', num:11, text:'What would help you get more value from AI?', spoken:'What would help you get more value from AI? Options include: training sessions, role-specific examples, pre-built templates, better integrations, clear guidelines, dedicated support, or more time to experiment. Feel free to mention anything else.', options:['Training sessions','Role-specific examples','Pre-built templates','Better integrations','Clear guidelines','Dedicated support','More time','Other'] },
+  { id:'q12', num:12, text:'Any final thoughts on your AI experience?', spoken:'Last question — is there anything else you\'d like to share about your experience with AI? This is completely optional, so feel free to say pass if you\'re done.', options:null }
 ];
 
-// ── Config save ──────────────────────────────────────────────────────────────
-// Auto-hide config overlay if keys are already embedded
-window.addEventListener('DOMContentLoaded', () => {
-  if (CONFIG.claude && CONFIG.claude !== 'PASTE_CLAUDE_KEY_HERE') {
-    document.getElementById('configOverlay').style.display = 'none';
-    renderNameScreen();
-  }
-});
+let currentQ=0, answers={}, respondentName='', recognition=null, isSpeaking=false;
+let autoListenTimer=null, silenceTimer=null, currentTranscript='';
 
-function saveConfig() {
-  const k = document.getElementById('cfgClaude').value.trim();
-  if (!k) {
-    showCfgError('Claude API key is required.');
-    return;
-  }
-  CONFIG.claude = k;
-  CONFIG.eleven = document.getElementById('cfgEleven').value.trim();
-  CONFIG.sheets  = document.getElementById('cfgSheets').value.trim();
-  document.getElementById('configOverlay').style.display = 'none';
-  renderNameScreen();
-}
-function showCfgError(msg) {
-  const el = document.getElementById('cfgError');
-  el.textContent = msg; el.classList.add('visible');
+function beginSurvey() {
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('surveyScreen').classList.remove('hidden');
+  buildDots(); showQuestion(0);
 }
 
-// ── Name screen — name is now captured as Q1 ─────────────────────────────────
-function renderNameScreen() {
-  startSurvey();
+function buildDots() {
+  document.getElementById('progressDots').innerHTML = QUESTIONS.map((_,i) => `<div class="dot" id="dot${i}"></div>`).join('');
 }
 
-function startSurvey() {
-  document.getElementById('progressWrap').style.display = 'block';
-  currentQ = 0;
-  renderQuestion(0);
-  speak(`Hello! Welcome to the Finance AI Survey. I'll read each question aloud and you can click your answers or speak them. Let's start. ${QUESTIONS[0].text}. Please spell it out so we can document it correctly.`);
+function updateDots(idx) {
+  QUESTIONS.forEach((_,i) => {
+    document.getElementById('dot'+i).className = 'dot'+(i<idx?' done':i===idx?' active':'');
+  });
 }
 
-// ── Render question ──────────────────────────────────────────────────────────
-function renderQuestion(idx) {
+function showQuestion(idx) {
+  stopMic(); clearTimers(); currentQ=idx; currentTranscript='';
   const q = QUESTIONS[idx];
-  const total = QUESTIONS.length;
-  const pct = Math.round(((idx) / total) * 100);
-  document.getElementById('progressLabel').textContent = `Question ${idx+1} of ${total}`;
-  document.getElementById('progressCount').textContent = pct + '%';
-  document.getElementById('progressFill').style.width = pct + '%';
-
-  const saved = answers[q.id] || (q.type === 'multi' ? [] : '');
-  const savedOther = answers[q.id + '_other'] || '';
-
-  let optionsHtml = '';
-  if (q.type === 'multi' || q.type === 'single') {
-    const cls = q.type === 'single' ? 'radio' : '';
-    optionsHtml = `<div class="options">` +
-      q.options.map((opt, i) => {
-        const sel = q.type === 'multi'
-          ? (Array.isArray(saved) && saved.includes(opt)) ? 'selected' : ''
-          : saved === opt ? 'selected' : '';
-        const isOther = opt.toLowerCase() === 'other';
-        return `<div class="option ${cls} ${sel}" data-val="${escHtml(opt)}" data-qid="${q.id}" data-type="${q.type}" onclick="toggleOption(this)">
-          <div class="option-box">
-            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-              <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <span class="option-label">${escHtml(opt)}</span>
-        </div>
-        ${isOther ? `<input class="other-input ${savedOther ? 'visible' : ''}" id="other_${q.id}" type="text" placeholder="Please specify..." value="${escHtml(savedOther)}"/>` : ''}`;
-      }).join('') +
-    `</div>`;
-  } else {
-    optionsHtml = `<textarea class="open-textarea" id="open_${q.id}" placeholder="Type your answer here, or use the microphone below...">${escHtml(saved)}</textarea>`;
-  }
-
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.innerHTML = `
-    <div class="q-num">Question ${idx+1} of ${total}</div>
-    <div class="q-text">${escHtml(q.text)}</div>
-    <div class="q-hint">${escHtml(q.hint)}</div>
-    ${optionsHtml}
-    <div class="voice-bar">
-      <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Click to speak your answer">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/>
-          <line x1="8" y1="23" x2="16" y2="23"/>
-        </svg>
-      </button>
-      <div>
-        <div class="voice-transcript" id="voiceTranscript">Click the mic and speak your answer</div>
-        <div class="voice-status" id="voiceStatus"></div>
-      </div>
-    </div>
-    <div id="errorBanner" class="error-banner"></div>
-    <div class="actions">
-      ${idx > 0 ? `<button class="btn btn-ghost" onclick="goBack()">← Back</button>` : ''}
-      <button class="btn btn-primary" id="nextBtn" onclick="goNext()">
-        ${idx === total - 1 ? 'Submit Survey' : 'Next →'}
-      </button>
-    </div>`;
-
-  const mc = document.getElementById('mainContent');
-  mc.innerHTML = '';
-  mc.appendChild(card);
-
-  // Show 'Other' input if 'Other' is selected
-  if (q.hasOther && Array.isArray(saved) && saved.includes('Other')) {
-    const oi = document.getElementById('other_' + q.id);
-    if (oi) oi.classList.add('visible');
-  }
+  updateDots(idx);
+  const qtEl = document.getElementById('questionText');
+  qtEl.classList.add('fading');
+  setTimeout(() => { qtEl.textContent=q.text; qtEl.classList.remove('fading'); document.getElementById('questionNum').textContent=`Question ${idx+1} of ${QUESTIONS.length}`; }, 300);
+  setTranscript('', false);
+  setStatus('idle','Getting ready…');
+  speakText(q.spoken, () => { autoListenTimer = setTimeout(() => startListening(), 600); });
 }
 
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function setWaveform(state) { document.getElementById('waveform').className='waveform '+state; }
+function setStatus(state, text) {
+  const el=document.getElementById('statusLabel'); el.textContent=text; el.className='status-label '+state;
+  setWaveform(state);
+  const btn=document.getElementById('micBtn');
+  btn.className='mic-btn '+(state==='listening'?'listening':state==='speaking'||state==='confirming'?'speaking':'');
+}
+function setTranscript(text, filled) {
+  const el=document.getElementById('transcriptBubble');
+  el.textContent=text||'Your answer will appear here';
+  el.className='transcript-bubble '+(filled?'filled':'empty');
 }
 
-// ── Option toggling ──────────────────────────────────────────────────────────
-function toggleOption(el) {
-  const qid = el.dataset.qid;
-  const val = el.dataset.val;
-  const type = el.dataset.type;
-  if (type === 'single') {
-    document.querySelectorAll(`.option[data-qid="${qid}"]`).forEach(o => o.classList.remove('selected'));
-    el.classList.add('selected');
-    answers[qid] = val;
-  } else {
-    el.classList.toggle('selected');
-    if (!Array.isArray(answers[qid])) answers[qid] = [];
-    if (el.classList.contains('selected')) {
-      if (!answers[qid].includes(val)) answers[qid].push(val);
-    } else {
-      answers[qid] = answers[qid].filter(v => v !== val);
+function toggleMic() { if(recognition){stopMic();}else{startListening();} }
+
+function startListening() {
+  if(isSpeaking) return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setStatus('idle','Voice not supported — use Chrome or Edge');return;}
+  recognition=new SR(); recognition.continuous=true; recognition.interimResults=true; recognition.lang='en-US';
+  recognition.onstart=()=>{ setStatus('listening','Listening…'); document.getElementById('micHint').textContent='Speak now — I\'ll move on when you\'re done'; };
+  recognition.onresult=(e)=>{
+    clearTimeout(silenceTimer);
+    let interim='', final='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
     }
-    // Toggle other input visibility
-    if (val.toLowerCase() === 'other') {
-      const oi = document.getElementById('other_' + qid);
-      if (oi) {
-        oi.classList.toggle('visible', el.classList.contains('selected'));
-        if (el.classList.contains('selected')) oi.focus();
-      }
-    }
-    // If "none" type option selected, deselect others
-    const noneLabels = ["I don't currently use any of these tools", "I don't use any other AI-enabled tools"];
-    if (noneLabels.includes(val) && el.classList.contains('selected')) {
-      document.querySelectorAll(`.option[data-qid="${qid}"]`).forEach(o => {
-        if (o !== el) { o.classList.remove('selected'); }
-      });
-      answers[qid] = [val];
-    } else if (!noneLabels.includes(val)) {
-      document.querySelectorAll(`.option[data-qid="${qid}"]`).forEach(o => {
-        if (noneLabels.includes(o.dataset.val)) { o.classList.remove('selected'); }
-      });
-      answers[qid] = answers[qid].filter(v => !noneLabels.includes(v));
-    }
-  }
-}
-
-// ── Navigation ───────────────────────────────────────────────────────────────
-function goNext() {
-  stopMic();
-  const q = QUESTIONS[currentQ];
-
-  // Save open text
-  if (q.type === 'open') {
-    const ta = document.getElementById('open_' + q.id);
-    answers[q.id] = ta ? ta.value.trim() : '';
-  }
-  // Save other text
-  if (q.hasOther) {
-    const oi = document.getElementById('other_' + q.id);
-    if (oi) answers[q.id + '_other'] = oi.value.trim();
-  }
-
-  // Capture respondent name from Q1
-  if (q.isName) {
-    const nameVal = (answers[q.id] || '').trim();
-    if (nameVal) respondentName = nameVal;
-  }
-
-  // Validate required (Q12 is optional)
-  if (q.num < 12) {
-    const a = answers[q.id];
-    const isEmpty = !a || (Array.isArray(a) && a.length === 0) || a === '';
-    if (isEmpty) {
-      showError('Please provide an answer to continue.');
-      return;
-    }
-  }
-
-  if (currentQ < QUESTIONS.length - 1) {
-    const card = document.querySelector('.card');
-    card.classList.add('fading');
-    setTimeout(() => {
-      currentQ++;
-      renderQuestion(currentQ);
-      const next = QUESTIONS[currentQ];
-      const greeting = next.isName ? '' : (respondentName && currentQ === 1 ? `Thanks ${respondentName}. ` : '');
-      speak(greeting + next.text + (next.hint && next.hint !== 'Select one' && !next.type === 'open' ? '. ' + next.hint + '.' : ''));
-      const pct = Math.round(((currentQ) / QUESTIONS.length) * 100);
-      document.getElementById('progressFill').style.width = pct + '%';
-      document.getElementById('progressCount').textContent = pct + '%';
-    }, 280);
-  } else {
-    submitSurvey();
-  }
-}
-
-function goBack() {
-  stopMic();
-  if (currentQ > 0) {
-    const card = document.querySelector('.card');
-    card.classList.add('fading');
-    setTimeout(() => {
-      currentQ--;
-      renderQuestion(currentQ);
-    }, 280);
-  }
-}
-
-function showError(msg) {
-  const el = document.getElementById('errorBanner');
-  if (el) { el.textContent = msg; el.classList.add('visible'); }
-}
-
-// ── Voice: mic input ─────────────────────────────────────────────────────────
-function toggleMic() {
-  if (!recognition) { startMic(); } else { stopMic(); }
-}
-
-function startMic() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    document.getElementById('voiceStatus').textContent = 'Voice input not supported in this browser. Use Chrome or Edge.';
-    return;
-  }
-  recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = true;
-  recognition.lang = 'en-US';
-
-  recognition.onstart = () => {
-    document.getElementById('micBtn').classList.add('listening');
-    document.getElementById('voiceTranscript').textContent = 'Listening…';
-    document.getElementById('voiceStatus').textContent = 'Speak now';
+    const text=(currentTranscript+' '+(final||interim)).trim();
+    setTranscript(text, true);
+    if(final){ currentTranscript=(currentTranscript+' '+final).trim(); silenceTimer=setTimeout(()=>processAnswer(currentTranscript),2000); }
   };
-  recognition.onresult = (e) => {
-    let interim = '', final = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) final += e.results[i][0].transcript;
-      else interim += e.results[i][0].transcript;
-    }
-    const text = (final || interim).trim();
-    document.getElementById('voiceTranscript').textContent = text || 'Listening…';
-    if (final) {
-      processVoiceAnswer(final.trim());
-      stopMic();
-    }
-  };
-  recognition.onerror = (e) => {
-    document.getElementById('voiceStatus').textContent = 'Error: ' + e.error;
-    stopMic();
-  };
-  recognition.onend = () => { stopMic(); };
+  recognition.onerror=(e)=>{ if(e.error!=='no-speech') setStatus('idle','Mic error: '+e.error); };
+  recognition.onend=()=>{ if(recognition){try{recognition.start();}catch(e){}} };
   recognition.start();
 }
 
 function stopMic() {
-  if (recognition) { try { recognition.stop(); } catch(e){} recognition = null; }
-  const mb = document.getElementById('micBtn');
-  if (mb) { mb.classList.remove('listening'); mb.classList.remove('speaking'); }
-  const vs = document.getElementById('voiceStatus');
-  if (vs) vs.textContent = '';
+  clearTimeout(silenceTimer);
+  if(recognition){ recognition.onend=null; try{recognition.stop();}catch(e){} recognition=null; }
+  document.getElementById('micHint').textContent='Click mic to speak, or wait for auto-listen';
+}
+function clearTimers(){ clearTimeout(autoListenTimer); clearTimeout(silenceTimer); }
+
+async function processAnswer(rawText) {
+  stopMic();
+  if(!rawText||rawText.trim()===''){
+    setStatus('listening','I didn\'t catch that — please try again');
+    autoListenTimer=setTimeout(()=>startListening(),1000); return;
+  }
+  const q=QUESTIONS[currentQ];
+  let cleanedAnswer=rawText.trim();
+  try {
+    const sysPrompt=q.options
+      ?'You are a survey assistant. Map the user\'s spoken words to the best matching answer choices. Return ONLY JSON: {"matched":["exact option text"],"summary":"5-10 word summary"}. Match as many options as apply.'
+      :'You are a survey assistant. Clean up the transcription. Return ONLY JSON: {"matched":[],"summary":"their answer cleaned up, max 20 words"}';
+    const optList=q.options?`Options: ${q.options.join(', ')}`:'';
+    const resp=await callClaude(sysPrompt,`Question: "${q.text}"\n${optList}\nUser said: "${rawText}"\nReturn JSON only.`);
+    const parsed=JSON.parse(resp.replace(/```json|```/g,'').trim());
+    answers[q.id]=parsed.matched&&parsed.matched.length>0?parsed.matched.join(', '):parsed.summary;
+    cleanedAnswer=parsed.summary||rawText;
+    if(q.isName) respondentName=cleanedAnswer.split(' ')[0];
+  } catch(e){ answers[q.id]=rawText; cleanedAnswer=rawText; if(q.isName) respondentName=rawText.split(' ')[0]; }
+
+  setTranscript(cleanedAnswer, true);
+  setStatus('confirming','Got it — confirming your answer…');
+  const confirms=['Got it — ','I\'ve noted that — ','Thanks — ','Recorded — ','I heard — '];
+  const confirmText=q.isName?`Nice to meet you, ${cleanedAnswer.split(' ')[0]}!`:confirms[currentQ%confirms.length]+cleanedAnswer+'.';
+  await speakTextAsync(confirmText);
+
+  if(currentQ<QUESTIONS.length-1){ setTimeout(()=>showQuestion(currentQ+1),400); }
+  else { setTimeout(()=>finishSurvey(),400); }
 }
 
-async function processVoiceAnswer(text) {
-  document.getElementById('voiceTranscript').textContent = `"${text}"`;
-  document.getElementById('voiceStatus').textContent = 'Processing with AI…';
-
-  const q = QUESTIONS[currentQ];
-  if (q.type === 'open') {
-    const ta = document.getElementById('open_' + q.id);
-    if (ta) ta.value = text;
-    answers[q.id] = text;
-    document.getElementById('voiceStatus').textContent = 'Answer recorded ✓';
-    return;
-  }
-
-  // Use Claude to match voice to options
+async function finishSurvey() {
+  stopMic();
+  document.getElementById('surveyScreen').classList.add('hidden');
+  document.getElementById('doneScreen').classList.remove('hidden');
+  document.getElementById('doneTitle').textContent=`Thank you${respondentName?', '+respondentName:''}!`;
+  await speakTextAsync(`Thank you so much${respondentName?', '+respondentName:''}! Your responses have been recorded. Let me generate a quick summary for you.`);
+  let summary='';
   try {
-    const optList = q.options.join(', ');
-    const sysPrompt = `You are a survey assistant. The user spoke their answer to a survey question. Map their spoken answer to one or more of the provided answer choices. Return ONLY a JSON array of the exact matching option strings. If they say "other" or something not in the list, include "Other" if it's available. For single-select, return only one item.`;
-    const userMsg = `Question: "${q.text}"\nAnswer type: ${q.type === 'single' ? 'single choice' : 'multiple choice'}\nOptions: ${optList}\nUser said: "${text}"\nReturn JSON array only.`;
-
-    const resp = await callClaude(sysPrompt, userMsg);
-    let matched = [];
+    const block=QUESTIONS.map(q=>`Q${q.num}: ${q.text}\nAnswer: ${answers[q.id]||'No answer'}`).join('\n\n');
+    summary=await callClaude('You are an AI analyst summarizing a finance employee survey. Write 3-4 sentences summarizing this person\'s AI maturity, usage patterns, and top gaps. Be specific and address them directly using "you".',`Respondent: ${respondentName}\n\n${block}`);
+  } catch(e){ summary='Summary could not be generated at this time.'; }
+  document.getElementById('doneSummary').textContent=summary;
+  let sheetStatus='';
+  if(CONFIG.sheets&&CONFIG.sheets!=='PASTE_SHEETS_URL_HERE'){
     try {
-      const clean = resp.replace(/```json|```/g,'').trim();
-      matched = JSON.parse(clean);
-    } catch(e) { matched = []; }
-
-    if (!Array.isArray(matched) || matched.length === 0) {
-      document.getElementById('voiceStatus').textContent = 'Couldn\'t match answer — please click your choices.';
-      return;
-    }
-
-    // Apply matches
-    matched.forEach(val => {
-      const opt = document.querySelector(`.option[data-qid="${q.id}"][data-val="${CSS.escape(val)}"]`);
-      if (opt && !opt.classList.contains('selected')) opt.click();
-    });
-    document.getElementById('voiceStatus').textContent = `Matched: ${matched.join(', ')} ✓`;
-  } catch(e) {
-    document.getElementById('voiceStatus').textContent = 'Could not process — please click your choices.';
+      await fetch(CONFIG.sheets,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({timestamp:new Date().toISOString(),name:answers['q1']||respondentName,department:answers['q2']||'',Q3:answers['q3']||'',Q4:answers['q4']||'',Q5:answers['q5']||'',Q6:answers['q6']||'',Q7:answers['q7']||'',Q8:answers['q8']||'',Q9:answers['q9']||'',Q10:answers['q10']||'',Q11:answers['q11']||'',Q12:answers['q12']||'',ai_summary:summary})});
+      sheetStatus='Responses saved ✓';
+    } catch(e){ sheetStatus='Could not save — please contact survey admin'; }
   }
+  document.getElementById('doneMeta').textContent=sheetStatus;
+  await speakTextAsync(summary);
 }
 
-// ── TTS: speak to user ────────────────────────────────────────────────────────
-async function speak(text) {
-  if (isSpeaking) { speechSynthesis.cancel(); isSpeaking = false; }
-  if (CONFIG.eleven) {
-    await speakElevenLabs(text);
-  } else {
-    speakBrowser(text);
-  }
+function speakText(text,onDone){
+  stopMic(); isSpeaking=true; setStatus('speaking','Speaking…');
+  if(CONFIG.eleven&&CONFIG.eleven!=='PASTE_ELEVENLABS_KEY_HERE'){
+    speakElevenLabs(text).then(()=>{isSpeaking=false;if(onDone)onDone();});
+  } else { speakBrowser(text,()=>{isSpeaking=false;if(onDone)onDone();}); }
+}
+function speakTextAsync(text){ return new Promise(resolve=>speakText(text,resolve)); }
+
+function speakBrowser(text,onDone){
+  const synth=window.speechSynthesis; if(!synth){if(onDone)onDone();return;}
+  synth.cancel();
+  const utt=new SpeechSynthesisUtterance(text); utt.rate=0.92; utt.pitch=1.0; utt.volume=1;
+  const voices=synth.getVoices();
+  const preferred=voices.find(v=>v.name.includes('Samantha')||v.name.includes('Karen')||v.name.includes('Google US English'));
+  if(preferred) utt.voice=preferred;
+  utt.onend=()=>{setStatus('idle','');if(onDone)onDone();};
+  utt.onerror=()=>{setStatus('idle','');if(onDone)onDone();};
+  synth.speak(utt);
 }
 
-function speakBrowser(text) {
-  if (!speechSynthesis) return;
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.rate = 0.95; utt.pitch = 1.0; utt.volume = 1;
-  const voices = speechSynthesis.getVoices();
-  const preferred = voices.find(v => v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Google US English'));
-  if (preferred) utt.voice = preferred;
-  isSpeaking = true;
-  utt.onend = () => { isSpeaking = false; };
-  speechSynthesis.speak(utt);
-}
-
-async function speakElevenLabs(text) {
+async function speakElevenLabs(text){
   try {
-    const res = await fetch('https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL', {
-      method: 'POST',
-      headers: {
-        'xi-api-key': CONFIG.eleven,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ text, model_id: 'eleven_monolingual_v1', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+    const res=await fetch('https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL',{method:'POST',headers:{'xi-api-key':CONFIG.eleven,'Content-Type':'application/json'},body:JSON.stringify({text,model_id:'eleven_monolingual_v1',voice_settings:{stability:0.5,similarity_boost:0.75}})});
+    if(!res.ok) throw new Error();
+    const blob=await res.blob(); const url=URL.createObjectURL(blob);
+    return new Promise(resolve=>{
+      const audio=new Audio(url);
+      audio.onended=()=>{setStatus('idle','');URL.revokeObjectURL(url);resolve();};
+      audio.onerror=()=>{setStatus('idle','');resolve();};
+      audio.play();
     });
-    if (!res.ok) { speakBrowser(text); return; }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const audio = new Audio(url);
-    isSpeaking = true;
-    audio.onended = () => { isSpeaking = false; URL.revokeObjectURL(url); };
-    audio.play();
-  } catch(e) { speakBrowser(text); }
+  } catch(e){ return new Promise(resolve=>speakBrowser(text,resolve)); }
 }
 
-// ── Claude API call ──────────────────────────────────────────────────────────
-async function callClaude(system, user, history = []) {
-  const messages = [...history, { role: 'user', content: user }];
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': CONFIG.claude,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system, messages })
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.content.map(c => c.text || '').join('');
+async function callClaude(system,user){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CONFIG.claude,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system,messages:[{role:'user',content:user}]})});
+  const data=await res.json(); if(data.error) throw new Error(data.error.message);
+  return data.content.map(c=>c.text||'').join('');
 }
 
-// ── Submit ────────────────────────────────────────────────────────────────────
-async function submitSurvey() {
-  // Save last q open text
-  const lastQ = QUESTIONS[QUESTIONS.length - 1];
-  const ta = document.getElementById('open_' + lastQ.id);
-  if (ta) answers[lastQ.id] = ta.value.trim();
-
-  // Ensure name and department are captured
-  const finalName = (answers['q1'] || respondentName || 'Unknown').trim();
-  const finalDept = (answers['q2'] || 'Not provided').trim();
-  respondentName = finalName;
-
-  const mc = document.getElementById('mainContent');
-  mc.innerHTML = `<div class="card" style="text-align:center;padding:40px 24px">
-    <div style="font-size:32px;margin-bottom:16px">⏳</div>
-    <div class="q-text" style="margin-bottom:8px">Saving your responses…</div>
-    <div class="q-hint">Generating summary and writing to Google Sheets</div>
-  </div>`;
-
-  document.getElementById('progressFill').style.width = '100%';
-  document.getElementById('progressCount').textContent = '100%';
-
-  // Build summary with Claude
-  let summary = '';
-  try {
-    const answerBlock = QUESTIONS.map(q => {
-      const a = answers[q.id];
-      const other = answers[q.id + '_other'];
-      let aStr = Array.isArray(a) ? a.join(', ') : (a || 'No answer');
-      if (other) aStr += ` (Other: ${other})`;
-      return `Q${q.num}: ${q.text}\nAnswer: ${aStr}`;
-    }).join('\n\n');
-
-    summary = await callClaude(
-      'You are an AI analyst summarizing a finance employee survey about AI usage. Write a 3-4 sentence plain-English summary of this respondent\'s overall AI maturity, usage patterns, and top gaps. Be specific and actionable.',
-      `Respondent: ${finalName} | Department: ${finalDept}\n\n${answerBlock}`
-    );
-  } catch(e) { summary = 'Summary unavailable.'; }
-
-  // Post to Google Sheets
-  let sheetStatus = 'Skipped (no webhook configured)';
-  if (CONFIG.sheets) {
-    try {
-      const payload = {
-        timestamp: new Date().toISOString(),
-        name: finalName,
-        department: finalDept,
-        ...Object.fromEntries(QUESTIONS.filter(q => q.num > 2).map(q => {
-          const a = answers[q.id];
-          const other = answers[q.id + '_other'];
-          let val = Array.isArray(a) ? a.join('; ') : (a || '');
-          if (other) val += ` [Other: ${other}]`;
-          return [`Q${q.num}`, val];
-        })),
-        ai_summary: summary
-      };
-      await fetch(CONFIG.sheets, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      sheetStatus = 'Submitted ✓';
-    } catch(e) { sheetStatus = 'Failed — please contact survey admin'; }
-  }
-
-  // Done screen
-  mc.innerHTML = `
-    <div class="card done-screen">
-      <div class="done-icon">✅</div>
-      <h2>Thank you, ${escHtml(finalName)}!</h2>
-      <p>Your responses have been recorded. Here's a quick summary of what you shared:</p>
-      <div style="background:var(--surface2);border-radius:10px;padding:18px 20px;text-align:left;margin-bottom:20px;font-size:14px;color:var(--muted);line-height:1.7">${escHtml(summary)}</div>
-      <div style="font-size:13px;color:var(--muted)">Google Sheets: ${escHtml(sheetStatus)}</div>
-    </div>`;
-  speak(`Thank you, ${finalName}! Your responses have been saved. Here's a quick summary. ${summary}`);
-}
+window.addEventListener('DOMContentLoaded',()=>{ if(window.speechSynthesis) window.speechSynthesis.getVoices(); });
 </script>
 </body>
 </html>
