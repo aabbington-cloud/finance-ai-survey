@@ -52,6 +52,9 @@
   .mic-btn.speaking{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.08)}
   @keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(62,207,142,0.3)}50%{box-shadow:0 0 0 12px rgba(62,207,142,0)}}
   .mic-hint{font-size:12px;color:var(--muted)}
+  .choices{display:flex;flex-direction:column;gap:8px;width:100%;margin-bottom:24px}
+  .choice-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:14px;color:var(--muted);text-align:left;transition:border-color 0.2s}
+  .choice-item.open-ended{font-style:italic;text-align:center;border-style:dashed}
   .start-screen{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%}
   .start-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:8px}
   .start-subtitle{font-size:15px;color:var(--muted);max-width:400px;line-height:1.6}
@@ -86,6 +89,7 @@
       <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
     </div>
     <div class="status-label" id="statusLabel">Getting ready...</div>
+    <div class="choices hidden" id="choicesContainer"></div>
     <div class="transcript-bubble empty" id="transcriptBubble">Your answer will appear here</div>
     <button class="mic-btn" id="micBtn">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -237,9 +241,23 @@ function showQuestion(idx) {
   }, 300);
   setTranscript("", false);
   setStatus("idle", "Getting ready...");
+  renderChoices(q);
   speakText(q.spoken, function() {
     autoListenTimer = setTimeout(function() { startListening(); }, 600);
   });
+}
+
+function renderChoices(q) {
+  var el = document.getElementById("choicesContainer");
+  if (q.options && q.options.length > 0) {
+    el.innerHTML = q.options.map(function(opt) {
+      return '<div class="choice-item">' + opt + '</div>';
+    }).join("");
+    el.classList.remove("hidden");
+  } else {
+    el.innerHTML = '<div class="choice-item open-ended">Speak your answer freely</div>';
+    el.classList.remove("hidden");
+  }
 }
 
 // ── UI ────────────────────────────────────────────────────────────────────────
@@ -403,10 +421,10 @@ async function processAnswer(rawText) {
 
   setTranscript(cleanedAnswer, true);
   setStatus("confirming", "Got it, confirming your answer...");
-  var confirms = ["Got it. ", "I have noted that. ", "Thanks for sharing. ", "Recorded. ", "I heard you. "];
+  var confirms = ["Noted.", "Got it.", "Thanks for that.", "Okay.", "Perfect.", "Appreciated.", "Great, thank you."];
   var confirmText = q.isName
     ? "Nice to meet you, " + cleanedAnswer.split(" ")[0] + ". Great to have you here."
-    : confirms[currentQ % confirms.length] + cleanedAnswer + ".";
+    : confirms[currentQ % confirms.length];
   await speakTextAsync(confirmText);
 
   if (currentQ < QUESTIONS.length - 1) { setTimeout(function() { showQuestion(currentQ + 1); }, 400); }
