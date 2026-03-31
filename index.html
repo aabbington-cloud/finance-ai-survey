@@ -143,63 +143,63 @@ const QUESTIONS = [
     options:null
   },
   {
-    id:"q2", multi:true, num:2,
+    id:"q2", num:2, multi:true,
     text:"Which company-licensed AI tools do you currently use?",
     spoken:"Which company-licensed AI tools do you currently use for work? Select all that apply.",
     options:["ChatGPT","Glean","n8n","I do not currently use any of these tools"]
   },
   {
-    id:"q2", multi:true, num:2,
+    id:"q3", num:3, multi:true,
     text:"What other tools with AI features do you use?",
     spoken:"What other tools or software do you use that have AI features? Select all that apply.",
     options:["Microsoft Copilot","Google Gemini","Claude","Notion AI","Salesforce AI","BI tools with AI","Coding assistants","None","Other"]
   },
   {
-    id:"q2", num:2,
+    id:"q4", num:4,
     text:"How often do you use AI tools day-to-day?",
     spoken:"How often do you use AI tools in your day-to-day work?",
     options:["Multiple times per day","About once per day","A few times per week","A few times per month","Rarely or never"]
   },
   {
-    id:"q2", multi:true, num:2,
+    id:"q5", num:5, multi:true,
     text:"What do you primarily use AI for?",
     spoken:"What do you primarily use AI for? Select all that apply.",
     options:["Data analysis","Automating tasks","Writing","Research","Workflow automation","Reports or dashboards","Brainstorming","Other"]
   },
   {
-    id:"q2", num:2,
+    id:"q6", num:6,
     text:"How much time does AI save you per week?",
     spoken:"How much time does AI save you on a typical week?",
     options:["10+ hours","5-10 hours","2-5 hours","Less than 2 hours","No measurable time savings"]
   },
   {
-    id:"q2", num:2,
+    id:"q7", num:7,
     text:"Have you built any repeatable AI workflows?",
     spoken:"Have you built or set up any repeatable AI workflows or automations?",
     options:["Yes, multiple workflows","Yes, one or two","Not yet but interested","No and not sure how"]
   },
   {
-    id:"q2", num:2,
+    id:"q8", num:8,
     text:"How confident are you working with AI tools?",
     spoken:"How confident are you in working with AI tools?",
     options:["Very confident","Somewhat confident","Beginner","Not confident"]
   },
   {
-    id:"q2", multi:true, num:2,
+    id:"q9", num:9, multi:true,
     text:"What challenges are you experiencing with AI?",
     spoken:"What challenges or gaps are you experiencing with AI tools today? Select all that apply.",
     options:["Not sure how to apply","Outputs not reliable","Privacy concerns","Lack of training","Hard to automate","Too time-consuming","Limited access","Other"]
   },
   {
-    id:"q2", multi:true, num:2,
+    id:"q10", num:10, multi:true,
     text:"What would help you get more value from AI?",
     spoken:"What would help you get more value from AI? Select all that apply.",
     options:["Training sessions","Role-specific examples","Pre-built templates","Better integrations","Clear guidelines","Dedicated support","More time","Other"]
   },
   {
-    id:"q2", num:2,
+    id:"q11", num:11,
     text:"Any final thoughts on your AI experience?",
-    spoken:"Last question. Is there anything else you would like to share about your experience with AI? This is completely optional, so feel free to say pass if you are done.",
+    spoken:"Last question. Is there anything else you would like to share about your experience with AI? This is completely optional.",
     options:null
   }
 ];
@@ -510,11 +510,17 @@ async function finishSurvey() {
           timestamp: new Date().toISOString(),
           name: answers["name"] || respondentName,
           email: answers["email"] || "",
-          department: answers["q2"] || "",
-          Q3:answers["q2"]||"", Q4:answers["q2"]||"", Q5:answers["q2"]||"",
-          Q6:answers["q2"]||"", Q7:answers["q2"]||"", Q8:answers["q2"]||"",
-          Q9:answers["q2"]||"", Q10:answers["q2"]||"", Q11:answers["q2"]||"",
-          Q12:answers["q2"]||""
+          department: answers["q1"] || "",
+          "Q3 - Licensed AI tools": answers["q2"] || "",
+          "Q4 - Other AI tools": answers["q3"] || "",
+          "Q5 - Usage frequency": answers["q4"] || "",
+          "Q6 - Primary uses": answers["q5"] || "",
+          "Q7 - Time saved per week": answers["q6"] || "",
+          "Q8 - Workflows built": answers["q7"] || "",
+          "Q9 - Confidence level": answers["q8"] || "",
+          "Q10 - Challenges": answers["q9"] || "",
+          "Q11 - What would help": answers["q10"] || "",
+          "Q12 - Other comments": answers["q11"] || ""
         })
       });
       sheetStatus = "Responses saved";
