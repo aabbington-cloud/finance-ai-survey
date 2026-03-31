@@ -370,6 +370,14 @@ const QUESTIONS = [
 ];
 
 // ── Config save ──────────────────────────────────────────────────────────────
+// Auto-hide config overlay if keys are already embedded
+window.addEventListener('DOMContentLoaded', () => {
+  if (CONFIG.claude && CONFIG.claude !== 'PASTE_CLAUDE_KEY_HERE') {
+    document.getElementById('configOverlay').style.display = 'none';
+    renderNameScreen();
+  }
+});
+
 function saveConfig() {
   const k = document.getElementById('cfgClaude').value.trim();
   if (!k) {
