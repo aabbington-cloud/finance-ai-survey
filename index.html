@@ -75,7 +75,7 @@
   .choice-item.selected{border-color:var(--accent);background:rgba(79,142,247,0.1);color:var(--text)}
   .choice-item.open-ended{font-style:italic;text-align:center;border-style:dashed;cursor:default}
   .choice-item.open-ended:hover{border-color:var(--border);background:var(--surface)}
-  .next-btn{margin-top:8px;padding:12px 32px;border-radius:99px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;border:none;cursor:pointer;transition:all 0.2s;align-self:flex-end}
+  .next-btn{margin-top:8px;padding:12px 32px;border-radius:99px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;border:none;cursor:pointer;transition:all 0.2s}
   .next-btn:hover{background:#6499f9}
   .done-answers{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;width:100%;text-align:left}
   .done-answer-row{padding:10px 0;border-bottom:1px solid var(--border)}
@@ -113,6 +113,7 @@
     <div class="status-label" id="statusLabel">Getting ready...</div>
     <div class="choices hidden" id="choicesContainer"></div>
     <textarea class="transcript-bubble empty" id="transcriptBubble" placeholder="Your answer will appear here — you can edit it before it saves" rows="2"></textarea>
+    <button class="next-btn hidden" id="transcriptNextBtn" style="align-self:flex-end;margin-bottom:8px" onclick="submitTranscript()">Confirm answer &rarr;</button>
     <button class="mic-btn" id="micBtn">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -363,6 +364,8 @@ function setTranscript(text, filled) {
   el.value = text || "";
   el.placeholder = filled ? "" : "Your answer will appear here — you can edit it before it saves";
   el.className = "transcript-bubble " + (filled ? "filled" : "empty");
+  var btn = document.getElementById("transcriptNextBtn");
+  if (btn) btn.classList.add("hidden");
 }
 
 // ── Mic ───────────────────────────────────────────────────────────────────────
@@ -643,10 +646,45 @@ async function callClaude(system, user) {
   return data.content.map(function(c) { return c.text || ""; }).join("");
 }
 
+function submitTranscript() {
+  var el = document.getElementById("transcriptBubble");
+  var text = el.value.trim();
+  if (!text) return;
+  clearTimeout(silenceTimer);
+  var btn = document.getElementById("transcriptNextBtn");
+  if (btn) btn.classList.add("hidden");
+  processAnswer(text);
+}
+
 window.addEventListener("DOMContentLoaded", function() {
   if (window.speechSynthesis) window.speechSynthesis.getVoices();
   document.getElementById("startBtn").addEventListener("click", beginSurvey);
   document.getElementById("micBtn").addEventListener("click", toggleMic);
+
+  // Transcript box — pause auto-advance while typing, show Next button
+  document.getElementById("transcriptBubble").addEventListener("input", function() {
+    // Cancel the auto-advance timer while they are typing
+    clearTimeout(silenceTimer);
+    var btn = document.getElementById("transcriptNextBtn");
+    if (btn) {
+      if (this.value.trim().length > 0) {
+        btn.classList.remove("hidden");
+      } else {
+        btn.classList.add("hidden");
+      }
+    }
+  });
+
+  // Resume auto-advance 3s after they stop typing (if no Next click)
+  document.getElementById("transcriptBubble").addEventListener("keyup", function() {
+    clearTimeout(silenceTimer);
+    if (this.value.trim().length > 0) {
+      silenceTimer = setTimeout(function() {
+        var text = document.getElementById("transcriptBubble").value.trim();
+        if (text) processAnswer(text);
+      }, 3000);
+    }
+  });
 });
 </script>
 </body>
