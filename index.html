@@ -43,9 +43,10 @@
   @keyframes listen-wave{0%,100%{height:8px}50%{height:48px}}
   .status-label{font-size:13px;color:var(--muted);margin-bottom:20px;min-height:20px;transition:color 0.3s;letter-spacing:0.04em}
   .status-label.listening{color:var(--success)}.status-label.confirming{color:var(--amber)}.status-label.speaking{color:var(--accent)}
-  .transcript-bubble{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 22px;font-size:15px;color:var(--text);line-height:1.5;min-height:56px;width:100%;margin-bottom:24px;transition:opacity 0.3s,border-color 0.3s}
-  .transcript-bubble.empty{opacity:0.3;font-style:italic;color:var(--muted)}
+  .transcript-bubble{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 22px;font-size:15px;color:var(--text);line-height:1.5;min-height:56px;width:100%;margin-bottom:24px;transition:opacity 0.3s,border-color 0.3s;resize:none;font-family:'DM Sans',sans-serif;outline:none}
+  .transcript-bubble.empty{opacity:0.4;font-style:italic;color:var(--muted)}
   .transcript-bubble.filled{border-color:rgba(79,142,247,0.3);opacity:1}
+  .transcript-bubble:focus{border-color:var(--accent);opacity:1}
   .mic-btn{width:64px;height:64px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--muted);margin-bottom:16px}
   .mic-btn:hover{border-color:var(--accent);color:var(--accent)}
   .mic-btn.listening{border-color:var(--success);color:var(--success);background:rgba(62,207,142,0.08);animation:mic-pulse 1.5s ease-in-out infinite}
@@ -66,7 +67,7 @@
   .done-icon{font-size:48px}.done-title{font-family:'DM Serif Display',serif;font-size:28px}
   .done-summary{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;font-size:14px;color:var(--muted);line-height:1.7;text-align:left;width:100%}
   .done-meta{font-size:12px;color:var(--muted)}
-  .text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--text);outline:none;transition:border-color 0.2s;margin-bottom:12px}
+  .text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color 0.2s;margin-bottom:12px}
   .text-input:focus{border-color:var(--accent)}
   .input-label{font-size:13px;color:var(--muted);margin-bottom:6px;text-align:left;width:100%}
   .choice-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--text);text-align:left;cursor:pointer;transition:all 0.15s;user-select:none}
@@ -111,7 +112,7 @@
     </div>
     <div class="status-label" id="statusLabel">Getting ready...</div>
     <div class="choices hidden" id="choicesContainer"></div>
-    <div class="transcript-bubble empty" id="transcriptBubble">Your answer will appear here</div>
+    <textarea class="transcript-bubble empty" id="transcriptBubble" placeholder="Your answer will appear here — you can edit it before it saves" rows="2"></textarea>
     <button class="mic-btn" id="micBtn">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -274,8 +275,13 @@ function renderChoices(q) {
   if (q.options && q.options.length > 0) {
     var isMulti = q.multi === true;
     el.innerHTML = q.options.map(function(opt) {
-      return '<div class="choice-item" data-qid="' + q.id + '" data-multi="' + isMulti + '" onclick="toggleChoice(this)">' + opt + '</div>';
+      var isOther = opt.toLowerCase() === "other";
+      return '<div class="choice-item" data-qid="' + q.id + '" data-multi="' + isMulti + '" data-other="' + isOther + '" onclick="toggleChoice(this)">' + opt + '</div>';
     }).join("");
+    // Add Other text input (hidden by default)
+    if (q.options.some(function(o) { return o.toLowerCase() === "other"; })) {
+      el.innerHTML += '<input type="text" id="otherInput_' + q.id + '" class="text-input" placeholder="Please describe..." style="display:none;margin-top:4px"/>';
+    }
     if (isMulti) {
       el.innerHTML += '<button class="next-btn" onclick="submitChoices()">Next &rarr;</button>';
     }
@@ -289,13 +295,27 @@ function renderChoices(q) {
 function toggleChoice(el) {
   var isMulti = el.dataset.multi === "true";
   var qid = el.dataset.qid;
+  var isOther = el.dataset.other === "true";
+
   if (isMulti) {
     el.classList.toggle("selected");
+    // Show/hide Other input
+    var otherInput = document.getElementById("otherInput_" + qid);
+    if (otherInput) {
+      var anyOtherSelected = document.querySelector('[data-qid="' + qid + '"][data-other="true"].selected');
+      otherInput.style.display = anyOtherSelected ? "block" : "none";
+      if (anyOtherSelected) otherInput.focus();
+    }
   } else {
     var siblings = document.querySelectorAll('[data-qid="' + qid + '"]');
     siblings.forEach(function(s) { s.classList.remove("selected"); });
     el.classList.add("selected");
-    // Auto-advance for single select after short delay
+    // Show/hide Other input for single select
+    var otherInput = document.getElementById("otherInput_" + qid);
+    if (otherInput) {
+      otherInput.style.display = isOther ? "block" : "none";
+      if (isOther) { otherInput.focus(); return; }
+    }
     clearTimeout(silenceTimer);
     silenceTimer = setTimeout(function() { submitChoices(); }, 600);
   }
@@ -310,6 +330,11 @@ function submitChoices() {
   }
   if (selected.length > 0) {
     var vals = selected.map(function(el) { return el.textContent; });
+    // Append Other text if filled in
+    var otherInput = document.getElementById("otherInput_" + q.id);
+    if (otherInput && otherInput.value.trim()) {
+      vals = vals.map(function(v) { return v.toLowerCase() === "other" ? "Other: " + otherInput.value.trim() : v; });
+    }
     answers[q.id] = vals.join(", ");
     var confirms = ["Noted.", "Got it.", "Thanks for that.", "Okay.", "Perfect.", "Appreciated.", "Great, thank you."];
     var confirmText = confirms[currentQ % confirms.length];
@@ -335,7 +360,8 @@ function setStatus(state, text) {
 
 function setTranscript(text, filled) {
   var el = document.getElementById("transcriptBubble");
-  el.textContent = text || "Your answer will appear here";
+  el.value = text || "";
+  el.placeholder = filled ? "" : "Your answer will appear here — you can edit it before it saves";
   el.className = "transcript-bubble " + (filled ? "filled" : "empty");
 }
 
@@ -377,7 +403,10 @@ function startListening() {
         setTranscript("", false);
         silenceTimer = setTimeout(function() { handleRepeatRequest(); }, 500);
       } else {
-        silenceTimer = setTimeout(function() { processAnswer(currentTranscript); }, 2000);
+        silenceTimer = setTimeout(function() {
+      var edited = document.getElementById("transcriptBubble").value.trim();
+      processAnswer(edited || currentTranscript);
+    }, 2000);
         schedulePausePrompt();
       }
     }
@@ -488,8 +517,8 @@ async function processAnswer(rawText) {
     : confirms[currentQ % confirms.length];
   await speakTextAsync(confirmText);
 
-  if (currentQ < QUESTIONS.length - 1) { setTimeout(function() { showQuestion(currentQ + 1); }, 400); }
-  else { setTimeout(function() { finishSurvey(); }, 400); }
+  if (currentQ < QUESTIONS.length - 1) { setTimeout(function() { showQuestion(currentQ + 1); }, 1200); }
+  else { setTimeout(function() { finishSurvey(); }, 1200); }
 }
 
 // ── Finish ────────────────────────────────────────────────────────────────────
@@ -538,8 +567,17 @@ async function finishSurvey() {
 }
 
 // ── TTS ───────────────────────────────────────────────────────────────────────
+function stopAllAudio() {
+  if (window._currentAudio) {
+    try { window._currentAudio.pause(); window._currentAudio.currentTime = 0; } catch(e) {}
+    window._currentAudio = null;
+  }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
 function speakText(text, onDone) {
   stopMic();
+  stopAllAudio();
   isSpeaking = true;
   setStatus("speaking", "Speaking...");
   if (ELEVEN_KEY && ELEVEN_KEY.length > 10) {
@@ -577,8 +615,9 @@ async function speakElevenLabs(text) {
     var url = URL.createObjectURL(blob);
     return new Promise(function(resolve) {
       var audio = new Audio(url);
-      audio.onended = function() { setStatus("idle", ""); URL.revokeObjectURL(url); resolve(); };
-      audio.onerror = function() { setStatus("idle", ""); resolve(); };
+      window._currentAudio = audio;
+      audio.onended = function() { window._currentAudio = null; setStatus("idle", ""); URL.revokeObjectURL(url); resolve(); };
+      audio.onerror = function() { window._currentAudio = null; setStatus("idle", ""); resolve(); };
       audio.play();
     });
   } catch(e) {
